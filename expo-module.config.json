@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["RNInfomaniakOnboardingModule"]
+  },
+  "android": {
+    "modules": ["com.infomaniak.nativeonboarding.RNInfomaniakOnboardingModule"]
+  }
+}

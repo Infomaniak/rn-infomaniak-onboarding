@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "rn-infomaniak-onboarding": ["../src/index"],
+      "rn-infomaniak-onboarding/*": ["../src/*"]
+    }
+  }
+}
