@@ -19,6 +19,11 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
+  spm_dependency(s,
+    url: 'https://github.com/Infomaniak/ios-onboarding',
+    requirement: {kind: 'upToNextMajorVersion', minimumVersion: '1.3.0'},
+    products: ['InfomaniakOnboarding']
+  )
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
