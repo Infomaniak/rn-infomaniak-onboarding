@@ -1,6 +1,24 @@
 {
-  "originHash" : "d0cb7908c762394ad36c25acfda86fef8f0f09b59e31a458780839551048c1a7",
+  "originHash" : "4c379f5dc7fccc6cc0cd04ff63807ac286b184b8c894bad91c33536cfc9e290a",
   "pins" : [
+    {
+      "identity" : "ios-dependency-injection",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Infomaniak/ios-dependency-injection",
+      "state" : {
+        "revision" : "86f3b77f71547b7778d2819d4d1c2d77847f2069",
+        "version" : "2.0.4"
+      }
+    },
+    {
+      "identity" : "ios-login",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Infomaniak/ios-login",
+      "state" : {
+        "revision" : "36d1c1886880695c735711c9e9226b07394e6035",
+        "version" : "7.3.1"
+      }
+    },
     {
       "identity" : "ios-onboarding",
       "kind" : "remoteSourceControl",

@@ -16,9 +16,103 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import AuthenticationServices
 import ExpoModulesCore
+import InfomaniakDI
+import InfomaniakLogin
 import InfomaniakOnboarding
+import OSLog
 import SwiftUI
+
+@MainActor
+final class LoginHandler: InfomaniakLoginDelegate, ObservableObject {
+    @LazyInjectService private var loginService: InfomaniakLoginable
+    @LazyInjectService private var tokenService: InfomaniakNetworkLoginable
+
+    @Published var isLoading = false
+
+    let onLoginSuccess: EventDispatcher
+    let onLoginError: EventDispatcher
+
+    init(onLoginSuccess: EventDispatcher, onLoginError: EventDispatcher) {
+        self.onLoginSuccess = onLoginSuccess
+        self.onLoginError = onLoginError
+    }
+
+    nonisolated func didCompleteLoginWith(code: String, verifier: String) {
+        Task {
+            await loginSuccessful(code: code, codeVerifier: verifier)
+        }
+    }
+
+    nonisolated func didFailLoginWith(error: Error) {
+        Task {
+            await loginFailed(error: error)
+        }
+    }
+
+    func loginAfterAccountCreation(from viewController: UIViewController) {
+        isLoading = true
+        loginService.setupWebviewNavbar(
+            title: "kChat",
+            titleColor: nil,
+            color: nil,
+            buttonColor: nil,
+            clearCookie: false,
+            timeOutMessage: nil
+        )
+        loginService.webviewLoginFrom(viewController: viewController,
+                                      hideCreateAccountButton: true,
+                                      delegate: self)
+    }
+
+    func login() {
+        isLoading = true
+        loginService.asWebAuthenticationLoginFrom(
+            anchor: ASPresentationAnchor(),
+            useEphemeralSession: true,
+            hideCreateAccountButton: true
+        ) { [weak self] result in
+            switch result {
+            case .success(let result):
+                self?.loginSuccessful(code: result.code, codeVerifier: result.verifier)
+            case .failure(let error):
+                self?.loginFailed(error: error)
+            }
+        }
+    }
+
+    private func loginSuccessful(code: String, codeVerifier verifier: String) {
+        Task {
+            do {
+                let token = try await tokenService.apiTokenUsing(code: code, codeVerifier: verifier)
+
+                onLoginSuccess.callAsFunction(["accessToken": token.accessToken])
+            } catch {
+                os_log("Error fetching token: %@", type: .error, error.localizedDescription)
+                onLoginError.callAsFunction(["error": error.localizedDescription])
+            }
+
+            isLoading = false
+        }
+    }
+
+    private func loginFailed(error: Error) {
+        isLoading = false
+        guard (error as? ASWebAuthenticationSessionError)?.code != .canceledLogin else { return }
+
+        onLoginError.callAsFunction(["error": error.localizedDescription])
+    }
+}
+
+struct OnboardingBottomButtonsView: View {
+    @ObservedObject var loginHandler: LoginHandler
+    var body: some View {
+        Button("Login") {
+            loginHandler.login()
+        }
+    }
+}
 
 class RNInfomaniakOnboardingView: ExpoView {
     private var onboardingViewController = OnboardingViewController(configuration: .init(headerImage: nil,
@@ -27,9 +121,16 @@ class RNInfomaniakOnboardingView: ExpoView {
                                                                                          isScrollEnabled: true,
                                                                                          dismissHandler: nil,
                                                                                          isPageIndicatorHidden: false))
-    let onLoad = EventDispatcher()
+
+    private var diSetupDone = false
+
+    let onLoginSuccess = EventDispatcher("onLoginSuccess")
+    let onLoginError = EventDispatcher("onLoginError")
+
+    let loginHandler: LoginHandler
 
     required init(appContext: AppContext? = nil) {
+        loginHandler = LoginHandler(onLoginSuccess: onLoginSuccess, onLoginError: onLoginError)
         super.init(appContext: appContext)
         clipsToBounds = true
 
@@ -44,6 +145,40 @@ class RNInfomaniakOnboardingView: ExpoView {
         onboardingViewController.view.removeFromSuperview()
 
         onboardingViewController = OnboardingViewController(configuration: configuration.toOnboardingConfiguration())
+        onboardingViewController.delegate = self
+
         addSubview(onboardingViewController.view)
     }
+
+    func setConfiguration(_ configuration: RNLoginConfiguration) {
+        guard !diSetupDone else {
+            os_log("DI already setup, skipping...", type: .info)
+            return
+        }
+
+        diSetupDone = true
+
+        let loginConfig = configuration.toLoginConfiguration()
+
+        SimpleResolver.sharedResolver.store(factory: Factory(type: InfomaniakNetworkLoginable.self) { _, _ in
+            InfomaniakNetworkLogin(config: loginConfig)
+        })
+        SimpleResolver.sharedResolver.store(factory: Factory(type: InfomaniakLoginable.self) { _, _ in
+            InfomaniakLogin(config: loginConfig)
+        })
+    }
+}
+
+extension RNInfomaniakOnboardingView: OnboardingViewControllerDelegate {
+    func shouldAnimateBottomViewForIndex(_ index: Int) -> Bool {
+        return false
+    }
+
+    func willDisplaySlideViewCell(_ slideViewCell: InfomaniakOnboarding.SlideCollectionViewCell, at index: Int) {}
+
+    func bottomViewForIndex(_ index: Int) -> (any View)? {
+        return OnboardingBottomButtonsView(loginHandler: loginHandler)
+    }
+
+    func currentIndexChanged(newIndex: Int) {}
 }

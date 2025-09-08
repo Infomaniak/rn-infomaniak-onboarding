@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     :ios => '15.1',
     :tvos => '15.1'
   }
-  s.swift_version  = '5.4'
+  s.swift_version  = '5.10'
   s.source         = { git: 'https://github.com/Infomaniak/rn-infomaniak-onboarding' }
   s.static_framework = true
 
@@ -23,6 +23,11 @@ Pod::Spec.new do |s|
     url: 'https://github.com/Infomaniak/ios-onboarding',
     requirement: {kind: 'upToNextMajorVersion', minimumVersion: '1.3.0'},
     products: ['InfomaniakOnboarding']
+  )
+  spm_dependency(s,
+    url: 'https://github.com/Infomaniak/ios-login',
+    requirement: {kind: 'upToNextMajorVersion', minimumVersion: '7.3.1'},
+    products: ['InfomaniakLogin']
   )
 
   # Swift/Objective-C compatibility

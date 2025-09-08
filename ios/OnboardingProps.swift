@@ -41,7 +41,7 @@ struct RNOnboardingConfiguration: Record {
     func toOnboardingConfiguration() -> OnboardingConfiguration {
         OnboardingConfiguration(
             headerImage: imageForName(headerImageName),
-            slides: slides.compactMap { $0.toSlide()},
+            slides: slides.compactMap { $0.toSlide() },
             pageIndicatorColor: pageIndicatorColor,
             isScrollEnabled: isScrollEnabled,
             dismissHandler: nil,
@@ -93,7 +93,7 @@ struct RNSlide: Record {
                 content: .illustration(illustration),
                 bottomView: bottomView
             )
-        } else if let animationName {
+        } else if animationName != nil {
             fatalError("Not implemented yet")
         } else {
             return nil
