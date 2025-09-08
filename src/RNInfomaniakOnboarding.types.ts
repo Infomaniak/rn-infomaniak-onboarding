@@ -44,10 +44,24 @@ export type OnLoginErrorEventPayload = {
     error: string;
 };
 
+export type LoginConfiguration = {
+  clientId: string;
+  loginURL?: string; // defaults to "https://login.infomaniak.com/"
+  redirectURI?: string; // defaults to "appbundleid://oauth2redirect"
+};
+
+export type OnLoginSuccessEventPayload = {
+  accessToken: string;
+};
+
+export type OnLoginErrorEventPayload = {
+  error: string;
+};
+
 export type RNInfomaniakOnboardingViewProps = {
-    //   loginConfiguration: LoginConfiguration;
-    onboardingConfiguration: OnboardingConfiguration;
-    onLoginSuccess?: (event: { nativeEvent: OnLoginSuccessEventPayload }) => void;
-    onLoginError?: (event: { nativeEvent: OnLoginErrorEventPayload }) => void;
-    style?: StyleProp<ViewStyle>;
+  loginConfiguration: LoginConfiguration;
+  onboardingConfiguration: OnboardingConfiguration;
+  onLoginSuccess?: (event: { nativeEvent: OnLoginSuccessEventPayload }) => void;
+  onLoginError?: (event: { nativeEvent: OnLoginErrorEventPayload }) => void;
+  style?: StyleProp<ViewStyle>;
 };
