@@ -29,7 +29,11 @@ Pod::Spec.new do |s|
     requirement: {kind: 'upToNextMajorVersion', minimumVersion: '7.3.1'},
     products: ['InfomaniakLogin']
   )
-
+  spm_dependency(s,
+    url: 'https://github.com/Infomaniak/ios-features',
+    requirement: {kind: 'upToNextMajorVersion', minimumVersion: '5.0.0'},
+    products: ['InterAppLogin']
+  )
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
