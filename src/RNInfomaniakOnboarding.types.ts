@@ -1,19 +1,23 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export type OnLoadEventPayload = {
-  url: string;
+export type Slide = {
+  backgroundImageName?: string;
+  backgroundImageTintColor?: string; // Color mapped from string
+  illustrationName?: string;
+  animationName?: string;
+  title?: string; // defaults to ""
+  subtitle?: string; // defaults to ""
 };
 
-export type RNInfomaniakOnboardingModuleEvents = {
-  onChange: (params: ChangeEventPayload) => void;
-};
-
-export type ChangeEventPayload = {
-  value: string;
+export type OnboardingConfiguration = {
+  headerImageName?: string;
+  slides?: Slide[];
+  pageIndicatorColor?: string; // Color mapped from string
+  isScrollEnabled?: boolean; // defaults to true
+  isPageIndicatorHidden?: boolean; // defaults to false
 };
 
 export type RNInfomaniakOnboardingViewProps = {
-  url: string;
-  onLoad: (event: { nativeEvent: OnLoadEventPayload }) => void;
+  onboardingConfiguration: OnboardingConfiguration;
   style?: StyleProp<ViewStyle>;
 };

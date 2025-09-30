@@ -1,0 +1,24 @@
+{
+  "originHash" : "d0cb7908c762394ad36c25acfda86fef8f0f09b59e31a458780839551048c1a7",
+  "pins" : [
+    {
+      "identity" : "ios-onboarding",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Infomaniak/ios-onboarding",
+      "state" : {
+        "revision" : "f5c44c976e2818b6e4f6c8946a4ffe0e6e7f0776",
+        "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm.git",
+      "state" : {
+        "revision" : "04f2fd18cc9404a0a0917265a449002674f24ec9",
+        "version" : "4.5.2"
+      }
+    }
+  ],
+  "version" : 3
+}
