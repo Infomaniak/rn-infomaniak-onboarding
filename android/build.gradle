@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:${kotlinVersion}")
+    }
+}
+
 apply plugin: 'com.android.library'
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
 
 group = 'com.infomaniak.nativeonboarding'
 version = '0.1.0'
@@ -14,30 +24,43 @@ useExpoPublishing()
 // Most of the time, you may like to manage the Android SDK versions yourself.
 def useManagedAndroidSdkVersions = false
 if (useManagedAndroidSdkVersions) {
-  useDefaultAndroidSdkVersions()
+    useDefaultAndroidSdkVersions()
 } else {
-  buildscript {
-    // Simple helper that allows the root project to override versions declared by this library.
-    ext.safeExtGet = { prop, fallback ->
-      rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    buildscript {
+        // Simple helper that allows the root project to override versions declared by this library.
+        ext.safeExtGet = { prop, fallback ->
+            rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+        }
     }
-  }
-  project.android {
-    compileSdkVersion safeExtGet("compileSdkVersion", 34)
-    defaultConfig {
-      minSdkVersion safeExtGet("minSdkVersion", 21)
-      targetSdkVersion safeExtGet("targetSdkVersion", 34)
+    project.android {
+        compileSdkVersion safeExtGet("compileSdkVersion", 34)
+        defaultConfig {
+            minSdkVersion safeExtGet("minSdkVersion", 21)
+            targetSdkVersion safeExtGet("targetSdkVersion", 34)
+        }
     }
-  }
 }
 
 android {
-  namespace "com.infomaniak.nativeonboarding"
-  defaultConfig {
-    versionCode 1
-    versionName "0.1.0"
-  }
-  lintOptions {
-    abortOnError false
-  }
+    namespace "com.infomaniak.nativeonboarding"
+    defaultConfig {
+        versionCode 1
+        versionName "0.1.0"
+    }
+    lintOptions {
+        abortOnError false
+    }
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    implementation platform(core.compose.bom)
+
+    implementation core.compose.runtime
+    implementation core.compose.ui
+    implementation core.compose.material3
+    debugImplementation core.compose.ui.tooling
+    implementation core.compose.ui.tooling.preview
 }
