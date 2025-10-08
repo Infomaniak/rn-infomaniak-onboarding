@@ -2,6 +2,7 @@ package com.infomaniak.nativeonboarding
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -12,6 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.infomaniak.core.onboarding.components.OnboardingComponents
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.views.ExpoView
 
@@ -44,7 +46,15 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 private fun OnboardingViewContent() {
     Scaffold { contentPadding ->
         Box(Modifier.padding(contentPadding)) {
-            Text("Hello world!", style = TextStyle(fontSize = 40.sp))
+            Column {
+                Text("Hello world!", style = TextStyle(fontSize = 40.sp))
+                OnboardingComponents.DefaultTitleAndDescription(
+                    title = "Hello",
+                    description = "Description",
+                    titleStyle = MaterialTheme.typography.bodyLarge,
+                    descriptionStyle = MaterialTheme.typography.labelLarge,
+                )
+            }
         }
     }
 }
