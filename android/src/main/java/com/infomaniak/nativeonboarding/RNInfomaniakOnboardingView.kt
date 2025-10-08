@@ -3,6 +3,7 @@ package com.infomaniak.nativeonboarding
 import android.content.Context
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.TextView
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
@@ -25,6 +26,6 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 
   init {
     // Adds the WebView to the view hierarchy.
-    addView(webView)
+    addView(TextView(context).apply { setText("Hello World!") })
   }
 }
