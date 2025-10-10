@@ -33,10 +33,10 @@ if (useManagedAndroidSdkVersions) {
         }
     }
     project.android {
-        compileSdkVersion safeExtGet("compileSdkVersion", 35)
+        compileSdkVersion safeExtGet("compileSdkVersion", 35) // Set version manually to match the one in Core and be compatible
         defaultConfig {
-            minSdkVersion safeExtGet("minSdkVersion", 27)
-            targetSdkVersion safeExtGet("targetSdkVersion", 35)
+            minSdkVersion safeExtGet("minSdkVersion", 27) // Set version manually to match the one in Core and be compatible
+            targetSdkVersion safeExtGet("targetSdkVersion", 35) // Set version manually to match the one in Core and be compatible
         }
     }
 }
