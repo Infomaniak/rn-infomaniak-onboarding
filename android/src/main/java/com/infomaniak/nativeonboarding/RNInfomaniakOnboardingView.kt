@@ -69,6 +69,10 @@ private fun OnboardingViewContent(pages: SnapshotStateList<Page>, colors: () -> 
     }
 }
 
+// fun salut() {
+//     CrossLoginDefaults
+// }
+
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {

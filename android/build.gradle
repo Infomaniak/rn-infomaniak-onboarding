@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.infomaniak.core:Onboarding'
     implementation 'com.infomaniak.core:Ui.Compose.Basics'
     implementation 'com.infomaniak.core:Ui.Compose.Margin'
+    implementation 'com.infomaniak.core:CrossAppLogin.Front'
 //    implementation project(":Core:CrossAppLogin:Back")
 //    implementation project(":Core:CrossAppLogin:Front")
 
