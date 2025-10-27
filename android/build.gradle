@@ -57,6 +57,8 @@ android {
 
 dependencies {
     implementation 'com.infomaniak.core:Onboarding'
+    implementation 'com.infomaniak.core:Compose.Basics'
+    implementation 'com.infomaniak.core:Compose.Margin'
 //    implementation project(":Core:CrossAppLogin:Back")
 //    implementation project(":Core:CrossAppLogin:Front")
 
