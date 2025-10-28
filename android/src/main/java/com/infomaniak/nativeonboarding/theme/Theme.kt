@@ -17,7 +17,6 @@
  */
 package com.infomaniak.nativeonboarding.theme
 
-import android.app.Activity
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -30,12 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 import com.infomaniak.core.compose.basics.Typography
 import com.infomaniak.core.compose.basics.bottomsheet.BottomSheetThemeDefaults
 import com.infomaniak.core.compose.basics.bottomsheet.LocalBottomSheetTheme
@@ -277,8 +273,6 @@ fun KChatTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    SetSystemBarsIconLightAppearance(isAppearanceLight = !isDarkTheme)
-
     val customColors = if (isDarkTheme) CustomDarkColors else CustomLightColors
 
     val bottomSheetTheme = BottomSheetThemeDefaults.theme(
@@ -291,20 +285,6 @@ fun KChatTheme(
         LocalCustomColors provides customColors,
     ) {
         MaterialTheme(colorScheme = getMaterialColorScheme(isDarkTheme, dynamicColor), content = content)
-    }
-}
-
-@Composable
-private fun SetSystemBarsIconLightAppearance(isAppearanceLight: Boolean) {
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).apply {
-                isAppearanceLightStatusBars = isAppearanceLight
-                isAppearanceLightNavigationBars = isAppearanceLight
-            }
-        }
     }
 }
 
