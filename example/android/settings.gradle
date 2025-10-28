@@ -41,6 +41,7 @@ includeBuild("../../android/Core") {
         substitute(module("com.infomaniak.core:Onboarding")).using(project(":Onboarding"))
         substitute(module("com.infomaniak.core:Compose.Basics")).using(project(":Compose:Basics"))
         substitute(module("com.infomaniak.core:Compose.Margin")).using(project(":Compose:Margin"))
+        substitute(module("com.infomaniak.core:Compose.Theme")).using(project(":Compose:Theme"))
     }
 }
 
