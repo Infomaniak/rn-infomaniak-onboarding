@@ -70,4 +70,7 @@ dependencies {
     implementation core.compose.material3
     debugImplementation core.compose.ui.tooling
     implementation core.compose.ui.tooling.preview
+
+    implementation core.coil.compose
+    implementation core.coil.svg
 }
