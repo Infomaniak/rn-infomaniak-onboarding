@@ -2,7 +2,7 @@ package com.infomaniak.nativeonboarding.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF176684)
+val primaryLight = Color(0xFF0088B2)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFC0E8FF)
 val onPrimaryContainerLight = Color(0xFF004D66)
