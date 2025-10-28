@@ -3,41 +3,51 @@ package com.infomaniak.nativeonboarding
 import android.content.Context
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.infomaniak.nativeonboarding.models.Page
+import com.infomaniak.nativeonboarding.models.LoginConfiguration
+import com.infomaniak.nativeonboarding.models.OnboardingConfiguration
+import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
 import com.infomaniak.nativeonboarding.theme.KChatTheme
 import expo.modules.kotlin.AppContext
+import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
 
 class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
-    // Creates and initializes an event dispatcher for the `onLoad` event.
+    // Creates and initializes an event dispatcher for the `onLoginSuccess` and `onLoginError` events.
     // The name of the event is inferred from the value and needs to match the event name defined in the module.
-    // private val onLoad by EventDispatcher()
+    private val onLoginSuccess by EventDispatcher()
+    private val onLoginError by EventDispatcher()
 
-    // Defines a WebView that will be used as the root subview.
-    // internal val webView = WebView(context).apply {
-    //     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-    //     webViewClient = object : WebViewClient() {
-    //         override fun onPageFinished(view: WebView, url: String) {
-    //             // Sends an event to JavaScript. Triggers a callback defined on the view component in JavaScript.
-    //             onLoad(mapOf("url" to url))
-    //         }
-    //     }
-    // }
+    private val pages = mutableStateListOf<Page>()
 
     init {
         addView(ComposeView(context).apply {
             setContent {
-                OnboardingViewContent()
+                OnboardingViewContent(pages)
             }
         })
+    }
+
+    fun setOnboardingConfig(config: OnboardingConfiguration?) {
+        pages.removeAll { true }
+        config?.let { pages.addAll(it.slides) }
+    }
+
+    fun setLoginConfig(config: LoginConfiguration?) {
+        // TODO
     }
 }
 
 @Composable
-private fun OnboardingViewContent() {
+private fun OnboardingViewContent(pages: SnapshotStateList<Page>) {
     KChatTheme {
         OnboardingScreen(
+            pages = pages,
             onLoginRequest = {},
             onCreateAccount = {},
         )
@@ -46,8 +56,8 @@ private fun OnboardingViewContent() {
 
 @Preview
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
     MaterialTheme {
-        OnboardingViewContent()
+        OnboardingViewContent(pages)
     }
 }
