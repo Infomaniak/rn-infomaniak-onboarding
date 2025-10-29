@@ -10,24 +10,30 @@ export default function App() {
           redirectURI: 'com.infomaniak.chat://oauth2redirect'
         }}
         onboardingConfiguration={{
-          headerImageName: 'logo',
+          primaryColorLight: '#0088B2',
+          primaryColorDark: '#8DCFF1',
+          onPrimaryColorLight: '#FFFFFF', // Specific to Android theme
+          onPrimaryColorDark: '#003547', // Specific to Android theme
           slides: [
             {
-              backgroundImageName: 'onboarding-background-1',
-              illustrationName: 'kchat_mockup',
+              backgroundImageNameLight: 'onboarding-gradient-left-light.svg',
+              backgroundImageNameDark: 'onboarding-gradient-left-dark.svg',
+              illustrationName: 'onboarding-animation-1.lottie',
+              illustrationLightThemeName: undefined,
+              illustrationDarkThemeName: "Pink-Dark",
               title: 'Slide 1',
               subtitle: 'Subtitle 1',
             },
             {
-              backgroundImageName: 'onboarding-background-1',
-              illustrationName: 'kchat_mockup',
+              backgroundImageNameLight: 'onboarding-gradient-right-light.svg',
+              backgroundImageNameDark: 'onboarding-gradient-right-dark.svg',
+              illustrationName: 'onboarding-animation-2.lottie',
+              illustrationLightThemeName: undefined,
+              illustrationDarkThemeName: "Pink-Dark",
               title: 'Slide 2',
               subtitle: 'Subtitle 2',
             },
           ],
-          pageIndicatorColor: '#ff0000ff',
-          isScrollEnabled: true,
-          isPageIndicatorHidden: false,
         }}
         onLoginSuccess={(event) => {
           Alert.alert('Login Success', event.nativeEvent.accessToken);

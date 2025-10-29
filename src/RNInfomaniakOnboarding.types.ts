@@ -1,20 +1,21 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export type Slide = {
-  backgroundImageName?: string;
-  backgroundImageTintColor?: string; // Color mapped from string
-  illustrationName?: string;
-  animationName?: string;
+  backgroundImageNameLight: string;
+  backgroundImageNameDark: string;
+  illustrationName: string;
+  illustrationLightThemeName?: string;
+  illustrationDarkThemeName?: string;
   title?: string; // defaults to ""
   subtitle?: string; // defaults to ""
 };
 
 export type OnboardingConfiguration = {
-  headerImageName?: string;
+  primaryColorLight: string; // Color mapped from string
+  primaryColorDark: string; // Color mapped from string
+  onPrimaryColorLight: string; // Color mapped from string, specific to Android theme
+  onPrimaryColorDark: string; // Color mapped from string, specific to Android theme
   slides?: Slide[];
-  pageIndicatorColor?: string; // Color mapped from string
-  isScrollEnabled?: boolean; // defaults to true
-  isPageIndicatorHidden?: boolean; // defaults to false
 };
 
 export type LoginConfiguration = {

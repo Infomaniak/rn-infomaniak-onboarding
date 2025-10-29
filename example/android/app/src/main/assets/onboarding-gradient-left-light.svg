@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="832.0pt" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 375 832" width="375.0pt" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<radialGradient cx="0" cy="0" gradientTransform="matrix(194.789 197.137 -210.568 193.613 1.16104e-05 1.17502e-05)" gradientUnits="userSpaceOnUse" id="RadialGradient" r="1">
+<stop offset="0" stop-color="#0088B2"/>
+<stop offset="1" stop-color="#0088B2" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<g id="Sans-titre">
+<g opacity="1">
+<clipPath clip-rule="nonzero" id="ClipPath">
+<path d="M0 0L375 0L375 0L375 832L375 832L0 832L0 832L0 0L0 0Z"/>
+</clipPath>
+<g clip-path="url(#ClipPath)">
+<path d="M-297.269 0C-297.269-164.177-164.177-297.269 0-297.269C164.177-297.269 297.269-164.177 297.269 0C297.269 164.177 164.177 297.269 0 297.269C-164.177 297.269-297.269 164.177-297.269 0Z" fill="url(#RadialGradient)" fill-rule="nonzero" opacity="1" stroke="none"/>
+</g>
+</g>
+</g>
+</svg>
