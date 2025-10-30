@@ -25,7 +25,7 @@ class RNInfomaniakOnboardingModule : Module() {
 
             // Defines a setter for the `onboardingConfiguration` prop.
             Prop("onboardingConfiguration") { view: RNInfomaniakOnboardingView, config: OnboardingConfiguration? ->
-                view.setOnboardingConfig(config)
+                config?.let { view.setOnboardingConfig(it) }
             }
 
             // Defines events that the view can send to JavaScript.
