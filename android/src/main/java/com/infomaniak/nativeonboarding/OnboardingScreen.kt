@@ -35,8 +35,8 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents.ThemedDotL
 import com.infomaniak.core.onboarding.models.OnboardingLottieSource
 import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
-import com.infomaniak.nativeonboarding.theme.KChatTheme
 import com.infomaniak.nativeonboarding.theme.LocalCustomColors
+import com.infomaniak.nativeonboarding.theme.OnboardingTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,7 +105,7 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    KChatTheme {
+    OnboardingTheme {
         Surface {
             OnboardingScreen(
                 pages = pages,
