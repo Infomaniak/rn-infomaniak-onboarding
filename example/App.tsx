@@ -1,73 +1,58 @@
-import { useEvent } from 'expo';
-import RNInfomaniakOnboarding, { RNInfomaniakOnboardingView } from 'rn-infomaniak-onboarding';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { RNInfomaniakOnboardingView } from 'rn-infomaniak-onboarding';
+import { SafeAreaView, Alert } from 'react-native';
 
 export default function App() {
-  const onChangePayload = useEvent(RNInfomaniakOnboarding, 'onChange');
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{RNInfomaniakOnboarding.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{RNInfomaniakOnboarding.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
-          <Button
-            title="Set value"
-            onPress={async () => {
-              await RNInfomaniakOnboarding.setValueAsync('Hello from JS!');
-            }}
-          />
-        </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <RNInfomaniakOnboardingView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
-        </Group>
-      </ScrollView>
+    <SafeAreaView style={styles.view}>
+      <RNInfomaniakOnboardingView
+        loginConfiguration={{
+          clientId: '20af5539-a4fb-421c-b45a-f43af3d90c14',
+          redirectURI: 'com.infomaniak.chat://oauth2redirect'
+        }}
+        onboardingConfiguration={{
+          primaryColorLight: '#0088B2',
+          primaryColorDark: '#8DCFF1',
+          onPrimaryColorLight: '#FFFFFF', // Specific to Android theme
+          onPrimaryColorDark: '#003547', // Specific to Android theme
+          slides: [
+            {
+              backgroundImageNameLight: 'onboarding-gradient-left-light.svg',
+              backgroundImageNameDark: 'onboarding-gradient-left-dark.svg',
+              illustrationName: 'onboarding-animation-1.lottie',
+              illustrationLightThemeName: undefined,
+              illustrationDarkThemeName: "Pink-Dark",
+              title: 'Slide 1',
+              subtitle: 'Subtitle 1',
+            },
+            {
+              backgroundImageNameLight: 'onboarding-gradient-right-light.svg',
+              backgroundImageNameDark: 'onboarding-gradient-right-dark.svg',
+              illustrationName: 'onboarding-animation-2.lottie',
+              illustrationLightThemeName: undefined,
+              illustrationDarkThemeName: "Pink-Dark",
+              title: 'Slide 2',
+              subtitle: 'Subtitle 2',
+            },
+          ],
+        }}
+        onLoginSuccess={(event) => {
+          Alert.alert('Login Success', event.nativeEvent.accessToken);
+        }}
+        onLoginError={(event) => {
+          Alert.alert('Login Error', event.nativeEvent.error);
+        }}
+        style={styles.view}
+      />
     </SafeAreaView>
   );
 }
 
-function Group(props: { name: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.group}>
-      <Text style={styles.groupHeader}>{props.name}</Text>
-      {props.children}
-    </View>
-  );
-}
-
 const styles = {
-  header: {
-    fontSize: 30,
-    margin: 20,
-  },
-  groupHeader: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  group: {
-    margin: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
   container: {
     flex: 1,
     backgroundColor: '#eee',
   },
   view: {
     flex: 1,
-    height: 200,
-  },
+  }
 };
