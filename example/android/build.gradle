@@ -6,9 +6,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('com.android.tools.build:gradle')
+        classpath('com.android.tools.build:gradle:8.13.0') // Forces AGP version to match the one in Core and be compatible
         classpath('com.facebook.react:react-native-gradle-plugin')
-        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0') // Forces Kotlin version to match the one in Core and be compatible
     }
 }
 
