@@ -35,5 +35,13 @@ rootProject.name = 'rn-infomaniak-onboarding-example'
 
 expoAutolinking.useExpoVersionCatalog()
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("core") {
+            from(files("../../android/Core/gradle/core.versions.toml"))
+        }
+    }
+}
+
 include ':app'
 includeBuild(expoAutolinking.reactNativeGradlePlugin)

@@ -41,7 +41,7 @@ class RNInfomaniakOnboardingModule : Module() {
     View(RNInfomaniakOnboardingView::class) {
       // Defines a setter for the `url` prop.
       Prop("url") { view: RNInfomaniakOnboardingView, url: URL ->
-        view.webView.loadUrl(url.toString())
+        // view.webView.loadUrl(url.toString())
       }
       // Defines an event that the view can send to JavaScript.
       Events("onLoad")
