@@ -1,2 +1,12 @@
-<manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewLoginActivity"
+            android:configChanges="orientation|screenSize" />
+    </application>
 </manifest>
