@@ -35,10 +35,10 @@ if (useManagedAndroidSdkVersions) {
         }
     }
     project.android {
-        compileSdkVersion safeExtGet("compileSdkVersion", 35) // Set version manually to match the one in Core and be compatible
+        compileSdkVersion safeExtGet("compileSdkVersion", 36) // Set version manually to match the one in Core and be compatible
         defaultConfig {
             minSdkVersion safeExtGet("minSdkVersion", 27) // Set version manually to match the one in Core and be compatible
-            targetSdkVersion safeExtGet("targetSdkVersion", 35) // Set version manually to match the one in Core and be compatible
+            targetSdkVersion safeExtGet("targetSdkVersion", 36) // Set version manually to match the one in Core and be compatible
         }
     }
 }
@@ -70,6 +70,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.infomaniak.core:Auth'
+    implementation 'com.infomaniak.core:Network'
     implementation 'com.infomaniak.core:Onboarding'
     implementation 'com.infomaniak.core:Ui.Compose.Basics'
     implementation 'com.infomaniak.core:Ui.Compose.Margin'
@@ -85,6 +87,8 @@ dependencies {
 
     implementation core.coil.compose
     implementation core.coil.svg
+
+    implementation core.activity.compose
 }
 
 // Handle publishing here with only standard flavour

@@ -5,5 +5,9 @@
         <meta-data
             android:name="io.sentry.dsn"
             android:value="" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewLoginActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 </manifest>

@@ -63,8 +63,8 @@ fun OnboardingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (isLastPage) {
-                    Button({}) { Text("Connect") }
-                    Button({}) { Text("New account") }
+                    Button(onLoginRequest) { Text("Connect") }
+                    Button(onCreateAccount) { Text("New account") }
                 } else {
                     Button({ scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } }) { Text("Next") }
                 }
