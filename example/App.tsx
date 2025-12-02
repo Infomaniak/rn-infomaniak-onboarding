@@ -7,7 +7,7 @@ export default function App() {
       <RNInfomaniakOnboardingView
         loginConfiguration={{
           clientId: '20af5539-a4fb-421c-b45a-f43af3d90c14',
-          redirectURI: 'com.infomaniak.chat://oauth2redirect'
+          redirectURIScheme: 'com.infomaniak.chat'
         }}
         onboardingConfiguration={{
           primaryColorLight: '#0088B2',
