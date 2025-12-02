@@ -21,7 +21,7 @@ export type OnboardingConfiguration = {
 export type LoginConfiguration = {
   clientId: string;
   loginURL?: string; // defaults to "https://login.infomaniak.com/"
-  redirectURI?: string; // defaults to "appbundleid://oauth2redirect"
+  redirectURIScheme: string; // The "appbundleid" part in the redirect URI of the form "appbundleid://oauth2redirect"
 };
 
 export type OnLoginSuccessEventPayload = {
