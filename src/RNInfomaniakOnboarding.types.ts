@@ -22,6 +22,8 @@ export type LoginConfiguration = {
   clientId: string;
   loginURL?: string; // defaults to "https://login.infomaniak.com/"
   redirectURIScheme: string; // The "appbundleid" part in the redirect URI of the form "appbundleid://oauth2redirect"
+  appVersionCode: number; // The Android build number. For api call headers and the user agent
+  appVersionName: string; // App version like "2.14.8". For api call headers and the user agent
 };
 
 export type OnLoginSuccessEventPayload = {
