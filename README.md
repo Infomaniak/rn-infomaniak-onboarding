@@ -1,6 +1,6 @@
 # Onboarding library
 
-## How to run on Android
+## How to run on Android 🤖
 
 1. Install Node.js
    https://nodejs.org/en/download
@@ -26,6 +26,37 @@
    npx expo start
    ```
 7. In Android Studio, run the example app as a regular Android project.
+
+> [!IMPORTANT]
+> Whatever you do, do not use "Expo Go"
+
+## How to run on iOS 🍏
+
+1. Install Node.js
+   https://nodejs.org/en/download
+2. Install dependencies from the root of the project
+   ```sh
+   npm install
+   ```
+3. Install cocoapods (https://guides.cocoapods.org/using/getting-started.html):
+	```sh
+	gem install cocoapods
+	```
+4. Install setup example:
+	```sh
+	cd example
+	npm install
+	npx pod-install
+	```
+5. Start the Expo development server (keep this terminal open) (in the example folder):
+	```sh
+	npm start
+	```
+6. Open the XCWorkspace in xCode
+	```sh
+	open ios/rninfomaniakonboardingexample.xcworkspace
+	```
+7. In Xcode, run the example app as a regular iOS app 🎉
 
 > [!IMPORTANT]
 > Whatever you do, do not use "Expo Go"
