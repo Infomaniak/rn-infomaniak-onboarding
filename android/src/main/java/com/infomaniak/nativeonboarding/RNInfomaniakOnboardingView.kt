@@ -38,7 +38,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     private val onLoginSuccess by EventDispatcher()
     private val onLoginError by EventDispatcher()
 
-    private var infomaniakLogin: InfomaniakLogin? by mutableStateOf(null)
+    private var loginData: LoginData? by mutableStateOf(null)
     private val pages = mutableStateListOf<Page>()
     private var onboardingArgumentColors by mutableStateOf<OnboardingArgumentColors?>(null)
 
@@ -47,7 +47,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     init {
         addView(ComposeView(context).apply {
             setContent {
-                infomaniakLogin?.let { infomaniakLogin ->
+                loginData?.let {
                     val scope = rememberCoroutineScope()
                     val context = LocalContext.current
                     val launcher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
@@ -55,7 +55,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                             val userLoginResult = LoginUtils.getLoginResultAfterWebView(
                                 result = result,
                                 context = context,
-                                infomaniakLogin = infomaniakLogin,
+                                infomaniakLogin = it.infomaniakLogin,
                                 userExistenceChecker = userExistenceChecker,
                             )
 
@@ -66,7 +66,15 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                     OnboardingViewContent(
                         pages = pages,
                         colors = { onboardingArgumentColors },
-                        onLoginRequest = { infomaniakLogin.startWebViewLogin(launcher) },
+                        onLoginRequest = { it.infomaniakLogin.startWebViewLogin(launcher) },
+                        onCreateAccount = {
+                            it.infomaniakLogin.startCreateAccountWebView(
+                                resultLauncher = launcher,
+                                createAccountUrl = it.createAccountUrl,
+                                successHost = it.successHost,
+                                cancelHost = it.cancelHost,
+                            )
+                        },
                     )
                 }
             }
@@ -93,12 +101,17 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                 appVersionName = it.appVersionName,
             )
 
-            infomaniakLogin = InfomaniakLogin(
-                context = context,
-                loginUrl = it.loginUrl,
-                clientID = it.clientId,
-                appUID = it.redirectURIScheme,
-                accessType = null,
+            loginData = LoginData(
+                InfomaniakLogin(
+                    context = context,
+                    loginUrl = it.loginUrl,
+                    clientID = it.clientId,
+                    appUID = it.redirectURIScheme,
+                    accessType = null,
+                ),
+                createAccountUrl = it.createAccountUrl,
+                successHost = it.successHost,
+                cancelHost = it.cancelHost,
             )
         }
     }
@@ -110,19 +123,27 @@ private fun String.toColor(): Color = Color(toColorInt())
 private fun OnboardingViewContent(
     pages: SnapshotStateList<Page>,
     colors: () -> OnboardingArgumentColors?,
-    onLoginRequest: () -> Unit
+    onLoginRequest: () -> Unit,
+    onCreateAccount: () -> Unit,
 ) {
     OnboardingTheme(colors) {
         OnboardingScreen(
             pages = pages,
             onLoginRequest = onLoginRequest,
-            onCreateAccount = {},
+            onCreateAccount = onCreateAccount,
         )
     }
 }
 
+private data class LoginData(
+    val infomaniakLogin: InfomaniakLogin,
+    val createAccountUrl: String,
+    val successHost: String,
+    val cancelHost: String,
+)
+
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null }, {})
+    OnboardingViewContent(pages, { null }, {}, {})
 }
