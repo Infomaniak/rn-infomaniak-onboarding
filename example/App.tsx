@@ -10,6 +10,7 @@ export default function App() {
           redirectURIScheme: 'com.infomaniak.chat',
           appVersionCode: 18,
           appVersionName: '0.2.5',
+          createAccountUrl: "https://welcome.infomaniak.com/signup/ikmail?app=true",
         }}
         onboardingConfiguration={{
           primaryColorLight: '#0088B2',
