@@ -27,12 +27,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.infomaniak.core.ui.compose.basics.Typography
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultTitleAndDescription
 import com.infomaniak.core.onboarding.components.OnboardingComponents.ThemedDotLottie
 import com.infomaniak.core.onboarding.models.OnboardingLottieSource
+import com.infomaniak.core.ui.compose.basics.Typography
 import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
 import com.infomaniak.nativeonboarding.theme.LocalCustomColors
@@ -86,11 +86,13 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
         )
     },
     illustration = {
-        ThemedDotLottie(
-            source = OnboardingLottieSource.Asset(illustrationFileName),
-            isCurrentPageVisible = { pagerState.currentPage == index },
-            themeId = { illustrationThemeName },
-        )
+        animatedIllustration?.let {
+            ThemedDotLottie(
+                source = OnboardingLottieSource.Asset(it.fileName),
+                isCurrentPageVisible = { pagerState.currentPage == index },
+                themeId = { it.themeName },
+            )
+        }
     },
     text = {
         DefaultTitleAndDescription(

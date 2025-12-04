@@ -20,18 +20,22 @@ export default function App() {
             {
               backgroundImageNameLight: 'onboarding-gradient-left-light.svg',
               backgroundImageNameDark: 'onboarding-gradient-left-dark.svg',
-              animatedIllustrationFileName: 'onboarding-animation-1.lottie',
-              animatedIllustrationLightThemeName: undefined,
-              animatedIllustrationDarkThemeName: "Pink-Dark",
+              animatedIllustration: {
+                fileName: "onboarding-animation-1.lottie",
+                lightThemeName: undefined,
+                darkThemeName: "Pink-Dark",
+              },
               title: 'Slide 1',
               subtitle: 'Subtitle 1',
             },
             {
               backgroundImageNameLight: 'onboarding-gradient-right-light.svg',
               backgroundImageNameDark: 'onboarding-gradient-right-dark.svg',
-              animatedIllustrationFileName: 'onboarding-animation-2.lottie',
-              animatedIllustrationLightThemeName: undefined,
-              animatedIllustrationDarkThemeName: "Pink-Dark",
+              animatedIllustration: {
+                fileName: "onboarding-animation-2.lottie",
+                lightThemeName: undefined,
+                darkThemeName: "Pink-Dark",
+              },
               title: 'Slide 2',
               subtitle: 'Subtitle 2',
             },

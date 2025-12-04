@@ -4,9 +4,7 @@ export type Slide = {
   backgroundImageNameLight: string;
   backgroundImageNameDark: string;
   staticIllustration?: StaticIllustration;
-  animatedIllustrationFileName?: string;
-  animatedIllustrationLightThemeName?: string;
-  animatedIllustrationDarkThemeName?: string;
+  animatedIllustration?: AnimatedIllustration;
   title?: string; // defaults to ""
   subtitle?: string; // defaults to ""
 };
@@ -14,6 +12,12 @@ export type Slide = {
 export type StaticIllustration = {
     lightFileName: string;
     darkFileName: string;
+};
+
+export type AnimatedIllustration = {
+    fileName: string;
+    lightThemeName?: string;
+    darkThemeName?: string;
 };
 
 export type OnboardingConfiguration = {
