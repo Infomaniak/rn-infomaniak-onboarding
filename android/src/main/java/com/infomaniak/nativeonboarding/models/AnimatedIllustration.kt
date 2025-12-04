@@ -7,8 +7,8 @@ import expo.modules.kotlin.records.Record
 
 data class AnimatedIllustration(
     @Field val fileName: String,
-    @Field val lightThemeName: String?,
-    @Field val darkThemeName: String?,
+    @Field private val lightThemeName: String?,
+    @Field private val darkThemeName: String?,
 ) : Record {
     @get:Composable
     val themeName: String? get() = if (isSystemInDarkTheme()) darkThemeName else lightThemeName

@@ -1,5 +1,6 @@
 package com.infomaniak.nativeonboarding
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,7 +79,7 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
     background = {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/${backgroundImageName}")
+                .data("file:///android_asset/${backgroundImage.fileName}")
                 .build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),

@@ -1,8 +1,7 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export type Slide = {
-  backgroundImageNameLight: string;
-  backgroundImageNameDark: string;
+  backgroundImage: StaticIllustration;
   staticIllustration?: StaticIllustration;
   animatedIllustration?: AnimatedIllustration;
   title?: string; // defaults to ""
@@ -10,8 +9,9 @@ export type Slide = {
 };
 
 export type StaticIllustration = {
-    lightFileName: string;
-    darkFileName: string;
+    androidLightFileName: string;
+    androidDarkFileName: string;
+    iosAssetName: string;
 };
 
 export type AnimatedIllustration = {

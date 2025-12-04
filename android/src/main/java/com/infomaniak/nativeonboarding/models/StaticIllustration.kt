@@ -6,9 +6,9 @@ import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 
 data class StaticIllustration(
-    @Field val lightFileName: String,
-    @Field val darkFileName: String,
+    @Field private val androidLightFileName: String,
+    @Field private val androidDarkFileName: String,
 ) : Record {
     @get:Composable
-    val fileName: String? get() = if (isSystemInDarkTheme()) darkFileName else lightFileName
+    val fileName: String get() = if (isSystemInDarkTheme()) androidDarkFileName else androidLightFileName
 }
