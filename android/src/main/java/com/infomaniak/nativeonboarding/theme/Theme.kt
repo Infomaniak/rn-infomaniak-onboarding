@@ -28,9 +28,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.infomaniak.core.compose.basics.Typography
-import com.infomaniak.core.compose.basics.bottomsheet.BottomSheetThemeDefaults
-import com.infomaniak.core.compose.basics.bottomsheet.LocalBottomSheetTheme
+import com.infomaniak.core.ui.compose.basics.Typography
+import com.infomaniak.core.ui.compose.basics.bottomsheet.BottomSheetThemeDefaults
+import com.infomaniak.core.ui.compose.basics.bottomsheet.LocalBottomSheetTheme
 import com.infomaniak.nativeonboarding.models.OnboardingArgumentColors
 
 val LocalCustomColors: ProvidableCompositionLocal<CustomColors> = staticCompositionLocalOf { CustomColors() }

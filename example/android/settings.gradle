@@ -39,8 +39,8 @@ includeBuild("../../android/Core") {
     dependencySubstitution {
         substitute(module("com.infomaniak.core:Core")).using(project(":"))
         substitute(module("com.infomaniak.core:Onboarding")).using(project(":Onboarding"))
-        substitute(module("com.infomaniak.core:Compose.Basics")).using(project(":Compose:Basics"))
-        substitute(module("com.infomaniak.core:Compose.Margin")).using(project(":Compose:Margin"))
+        substitute(module("com.infomaniak.core:Ui.Compose.Basics")).using(project(":Ui:Compose:Basics"))
+        substitute(module("com.infomaniak.core:Ui.Compose.Margin")).using(project(":Ui:Compose:Margin"))
     }
 }
 
