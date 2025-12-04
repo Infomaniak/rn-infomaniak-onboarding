@@ -3,7 +3,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 export type Slide = {
   backgroundImageNameLight: string;
   backgroundImageNameDark: string;
-  illustrationName: string;
+  illustrationFileName: string;
   illustrationLightThemeName?: string;
   illustrationDarkThemeName?: string;
   title?: string; // defaults to ""

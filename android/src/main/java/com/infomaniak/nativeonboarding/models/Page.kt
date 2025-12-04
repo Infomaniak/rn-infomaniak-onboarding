@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 interface Page {
     val backgroundImageNameLight: String
     val backgroundImageNameDark: String
-    val illustrationName: String
+    val illustrationFileName: String
     val illustrationLightThemeName: String?
     val illustrationDarkThemeName: String?
     val title: String

@@ -20,7 +20,7 @@ export default function App() {
             {
               backgroundImageNameLight: 'onboarding-gradient-left-light.svg',
               backgroundImageNameDark: 'onboarding-gradient-left-dark.svg',
-              illustrationName: 'onboarding-animation-1.lottie',
+              illustrationFileName: 'onboarding-animation-1.lottie',
               illustrationLightThemeName: undefined,
               illustrationDarkThemeName: "Pink-Dark",
               title: 'Slide 1',
@@ -29,7 +29,7 @@ export default function App() {
             {
               backgroundImageNameLight: 'onboarding-gradient-right-light.svg',
               backgroundImageNameDark: 'onboarding-gradient-right-dark.svg',
-              illustrationName: 'onboarding-animation-2.lottie',
+              illustrationFileName: 'onboarding-animation-2.lottie',
               illustrationLightThemeName: undefined,
               illustrationDarkThemeName: "Pink-Dark",
               title: 'Slide 2',

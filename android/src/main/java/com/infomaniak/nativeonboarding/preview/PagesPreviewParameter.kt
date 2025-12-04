@@ -19,7 +19,7 @@ private val pages = mutableStateListOf<Page>(
 private class PreviewPage(override val title: String) : Page {
     override val backgroundImageNameLight: String = ""
     override val backgroundImageNameDark: String = ""
-    override val illustrationName: String = ""
+    override val illustrationFileName: String = ""
     override val illustrationLightThemeName: String? = null
     override val illustrationDarkThemeName: String? = ""
     override val subtitle: String = "Hello World!"

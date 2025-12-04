@@ -87,7 +87,7 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
     },
     illustration = {
         ThemedDotLottie(
-            source = OnboardingLottieSource.Asset(illustrationName),
+            source = OnboardingLottieSource.Asset(illustrationFileName),
             isCurrentPageVisible = { pagerState.currentPage == index },
             themeId = { illustrationThemeName },
         )
