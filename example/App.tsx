@@ -1,52 +1,74 @@
-import { RNInfomaniakOnboardingView, OnboardingConfiguration } from 'rn-infomaniak-onboarding';
+import { OnboardingConfiguration, RNInfomaniakOnboardingView } from 'rn-infomaniak-onboarding';
 import { SafeAreaView, Alert } from 'react-native';
 
 export default function App() {
-    const onboardingConfig: OnboardingConfiguration = {
-        primaryColorLight: '#3F51B5',
-        primaryColorDark: '#5C6BC0',
-        onPrimaryColorLight: '#FFFFFF',
-        onPrimaryColorDark: '#000000ff',
+    let configuration: OnboardingConfiguration = {
+        primaryColorLight: '#0088B2',
+        primaryColorDark: '#8DCFF1',
+        onPrimaryColorLight: '#FFFFFF', // Specific to Android theme
+        onPrimaryColorDark: '#003547', // Specific to Android theme
         slides: [
             {
-                backgroundImageNameLight: 'onboarding-background-1',
-                backgroundImageNameDark: 'onboarding-background-1',
-                illustrationName: 'kchat_mockup',
-                illustrationLightThemeName: 'kchat_mockup_light',
-                illustrationDarkThemeName: 'kchat_mockup_dark',
-                title: 'Welcome',
-                subtitle: 'Discover our app',
+                backgroundImage: {
+                    androidLightFileName: "onboarding-gradient-left-light.svg",
+                    androidDarkFileName: "onboarding-gradient-left-dark.svg",
+                    iosAssetName: "onboarding-background-1",
+                },
+                staticIllustration: {
+                    androidLightFileName: "onboarding-static-illustration-light.svg",
+                    androidDarkFileName: "onboarding-static-illustration-dark.svg",
+                    iosAssetName: "kchat_mockup",
+                },
+                animatedIllustration: {
+                    fileName: "onboarding-animation-1.lottie",
+                    lightThemeName: undefined,
+                    darkThemeName: "Pink-Dark",
+                },
+                title: 'Slide 1',
+                subtitle: 'Subtitle 1',
             },
             {
-                backgroundImageNameLight: 'onboarding-background-1',
-                backgroundImageNameDark: 'onboarding-background-1',
-                illustrationName: 'kchat_mockup',
-                illustrationLightThemeName: 'kchat_mockup_light',
-                illustrationDarkThemeName: 'kchat_mockup_dark',
-                title: 'Features',
-                subtitle: 'All the features you need',
+                backgroundImage: {
+                    androidLightFileName: "onboarding-gradient-right-light.svg",
+                    androidDarkFileName: "onboarding-gradient-right-dark.svg",
+                    iosAssetName: "onboarding-background-1",
+                },
+                animatedIllustration: {
+                    fileName: "illu_onboarding_1.json",
+                    lightThemeName: undefined,
+                    darkThemeName: "Pink-Dark",
+                },
+                title: 'Slide 2',
+                subtitle: 'Subtitle 2',
             },
             {
-                backgroundImageNameLight: 'onboarding-background-1',
-                backgroundImageNameDark: 'onboarding-background-1',
-                illustrationName: 'kchat_mockup',
-                title: 'Get Started',
-                subtitle: 'Let\'s go!',
+                backgroundImage: {
+                    androidLightFileName: "onboarding-gradient-left-light.svg",
+                    androidDarkFileName: "onboarding-gradient-left-dark.svg",
+                    iosAssetName: "onboarding-background-1",
+                },
+                staticIllustration: {
+                    androidLightFileName: "onboarding-static-illustration-light.svg",
+                    androidDarkFileName: "onboarding-static-illustration-dark.svg",
+                    iosAssetName: "onboarding-static-illustration",
+                },
+                title: 'Slide 3',
+                subtitle: 'Subtitle 3',
             },
         ],
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.view}>
             <RNInfomaniakOnboardingView
-                style={styles.view}
-                onboardingConfiguration={onboardingConfig}
+                onboardingConfiguration={configuration}
                 onLoginSuccess={(event) => {
-                    Alert.alert('Login réussi', `Token: ${event.nativeEvent.accessToken}`);
+                    Alert.alert('Login Success', event.nativeEvent.accessToken);
                 }}
                 onLoginError={(event) => {
-                    Alert.alert('Erreur de login', event.nativeEvent.error);
+                    Alert.alert('Login Error', event.nativeEvent.error);
                 }}
+                style={styles.view}
             />
         </SafeAreaView>
     );

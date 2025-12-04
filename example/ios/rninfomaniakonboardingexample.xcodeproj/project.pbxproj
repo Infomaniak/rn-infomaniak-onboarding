@@ -10,6 +10,7 @@
 		12FAE1BCABB06311654E60D6 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B39C535793639DC328752A /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		16A0BD7FCAC0D71994F06395 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D6C7A7D2A7068647B1DD2D37 /* PrivacyInfo.xcprivacy */; };
+		17B2D8122EE1F2E70000E3DC /* illu_onboarding_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 17B2D8112EE1F2E70000E3DC /* illu_onboarding_1.json */; };
 		1DA2DD697FCCD31B073CDB35 /* libPods-rninfomaniakonboardingexample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DC5C797C356ADEB9F895EC4 /* libPods-rninfomaniakonboardingexample.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
@@ -20,12 +21,13 @@
 		13B07F961A680F5B00A75B9A /* rninfomaniakonboardingexample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rninfomaniakonboardingexample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = rninfomaniakonboardingexample/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = rninfomaniakonboardingexample/Info.plist; sourceTree = "<group>"; };
+		17B2D8112EE1F2E70000E3DC /* illu_onboarding_1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = illu_onboarding_1.json; sourceTree = "<group>"; };
 		1ADB8316444C5626EE8B8CA9 /* Pods-rninfomaniakonboardingexample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rninfomaniakonboardingexample.debug.xcconfig"; path = "Target Support Files/Pods-rninfomaniakonboardingexample/Pods-rninfomaniakonboardingexample.debug.xcconfig"; sourceTree = "<group>"; };
 		5DC5C797C356ADEB9F895EC4 /* libPods-rninfomaniakonboardingexample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rninfomaniakonboardingexample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		64A3F6E39FAF8AEEB1F99065 /* Pods-rninfomaniakonboardingexample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rninfomaniakonboardingexample.release.xcconfig"; path = "Target Support Files/Pods-rninfomaniakonboardingexample/Pods-rninfomaniakonboardingexample.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = rninfomaniakonboardingexample/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D6C7A7D2A7068647B1DD2D37 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = rninfomaniakonboardingexample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D6C7A7D2A7068647B1DD2D37 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = rninfomaniakonboardingexample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E5B39C535793639DC328752A /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-rninfomaniakonboardingexample/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = rninfomaniakonboardingexample/AppDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				D6C7A7D2A7068647B1DD2D37 /* PrivacyInfo.xcprivacy */,
+				17B2D8112EE1F2E70000E3DC /* illu_onboarding_1.json */,
 			);
 			name = rninfomaniakonboardingexample;
 			sourceTree = "<group>";
@@ -128,7 +131,6 @@
 				1ADB8316444C5626EE8B8CA9 /* Pods-rninfomaniakonboardingexample.debug.xcconfig */,
 				64A3F6E39FAF8AEEB1F99065 /* Pods-rninfomaniakonboardingexample.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -194,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
+				17B2D8122EE1F2E70000E3DC /* illu_onboarding_1.json in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				16A0BD7FCAC0D71994F06395 /* PrivacyInfo.xcprivacy in Resources */,
@@ -445,10 +448,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -503,10 +503,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
