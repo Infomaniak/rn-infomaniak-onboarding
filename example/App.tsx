@@ -18,22 +18,46 @@ export default function App() {
           onPrimaryColorDark: '#003547', // Specific to Android theme
           slides: [
             {
-              backgroundImageNameLight: 'onboarding-gradient-left-light.svg',
-              backgroundImageNameDark: 'onboarding-gradient-left-dark.svg',
-              illustrationName: 'onboarding-animation-1.lottie',
-              illustrationLightThemeName: undefined,
-              illustrationDarkThemeName: "Pink-Dark",
+              backgroundImage: {
+                androidLightFileName: "onboarding-gradient-left-light.svg",
+                androidDarkFileName: "onboarding-gradient-left-dark.svg",
+                iosAssetName: "onboarding-gradient-left",
+              },
+              animatedIllustration: {
+                fileName: "onboarding-animation-1.lottie",
+                lightThemeName: undefined,
+                darkThemeName: "Pink-Dark",
+              },
               title: 'Slide 1',
               subtitle: 'Subtitle 1',
             },
             {
-              backgroundImageNameLight: 'onboarding-gradient-right-light.svg',
-              backgroundImageNameDark: 'onboarding-gradient-right-dark.svg',
-              illustrationName: 'onboarding-animation-2.lottie',
-              illustrationLightThemeName: undefined,
-              illustrationDarkThemeName: "Pink-Dark",
+              backgroundImage: {
+                androidLightFileName: "onboarding-gradient-right-light.svg",
+                androidDarkFileName: "onboarding-gradient-right-dark.svg",
+                iosAssetName: "onboarding-gradient-right",
+              },
+              animatedIllustration: {
+                fileName: "onboarding-animation-2.lottie",
+                lightThemeName: undefined,
+                darkThemeName: "Pink-Dark",
+              },
               title: 'Slide 2',
               subtitle: 'Subtitle 2',
+            },
+            {
+              backgroundImage: {
+                androidLightFileName: "onboarding-gradient-left-light.svg",
+                androidDarkFileName: "onboarding-gradient-left-dark.svg",
+                iosAssetName: "onboarding-gradient-left",
+              },
+              staticIllustration: {
+                androidLightFileName: "onboarding-static-illustration-light.svg",
+                androidDarkFileName: "onboarding-static-illustration-dark.svg",
+                iosAssetName: "onboarding-static-illustration",
+              },
+              title: 'Slide 3',
+              subtitle: 'Subtitle 3',
             },
           ],
         }}
