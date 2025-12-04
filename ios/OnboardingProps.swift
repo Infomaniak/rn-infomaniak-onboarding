@@ -23,16 +23,16 @@ import SwiftUI
 
 struct RNOnboardingConfiguration: Record {
     @Field
-    var primaryColorLight: String = "#000000"
+    var primaryColorLight = "#000000"
 
     @Field
-    var primaryColorDark: String = "#FFFFFF"
+    var primaryColorDark = "#FFFFFF"
 
     @Field
-    var onPrimaryColorLight: String = "#FFFFFF"
+    var onPrimaryColorLight = "#FFFFFF"
 
     @Field
-    var onPrimaryColorDark: String = "#000000"
+    var onPrimaryColorDark = "#000000"
 
     @Field
     var slides: [RNSlide] = []
@@ -47,7 +47,9 @@ struct RNOnboardingConfiguration: Record {
     func toOnboardingConfiguration() -> OnboardingConfiguration {
         OnboardingConfiguration(
             headerImage: nil,
-            slides: slides.compactMap { $0.toSlide() },
+            slides: slides.enumerated().compactMap { index, slide in
+                slide.toSlide(id: index)
+            },
             pageIndicatorColor: colorFromHex(primaryColorLight),
             isScrollEnabled: isScrollEnabled,
             dismissHandler: nil,
@@ -58,22 +60,13 @@ struct RNOnboardingConfiguration: Record {
 
 struct RNSlide: Record {
     @Field
-    var backgroundImageNameLight: String? = nil
+    var backgroundImage: [String: String]
 
     @Field
-    var backgroundImageNameDark: String? = nil
+    var staticIllustration: [String: String]? = nil
 
     @Field
-    var illustrationName: String? = nil
-
-    @Field
-    var illustrationLightThemeName: String? = nil
-
-    @Field
-    var illustrationDarkThemeName: String? = nil
-
-    @Field
-    var animationName: String? = nil
+    var animatedIllustration: [String: String]? = nil
 
     @Field
     var title: String? = nil
@@ -82,10 +75,11 @@ struct RNSlide: Record {
     var subtitle: String? = nil
 
     @MainActor
-    func toSlide() -> Slide? {
-        // Use light theme image for now (could be improved with trait collection)
-        let backgroundImageName = backgroundImageNameLight ?? backgroundImageNameDark
-        guard let backgroundImage = imageForName(backgroundImageName) else {
+    func toSlide(id: Int) -> Slide? {
+        // Extract iOS asset name from backgroundImage
+        guard let iosAssetName = backgroundImage["iosAssetName"],
+              let backgroundImage = imageForName(iosAssetName)
+        else {
             return nil
         }
 
@@ -104,17 +98,34 @@ struct RNSlide: Record {
             }
         }
 
-        if let illustration = imageForName(illustrationName) {
+        if let staticIllustration,
+           let iosAssetName = staticIllustration["iosAssetName"],
+           let illustration = imageForName(iosAssetName)
+        {
             return Slide(
                 backgroundImage: backgroundImage,
                 backgroundImageTintColor: nil,
                 content: .illustration(illustration),
                 bottomView: bottomView
             )
-        } else if let animationName {
-            fatalError("Not implemented yet")
+        } else if let animatedIllustration,
+                  let fileName = animatedIllustration["fileName"]
+        {
+            // let bundle = Bundle(for: RNInfomaniakOnboardingModule.self)
+            return Slide(
+                backgroundImage: backgroundImage,
+                backgroundImageTintColor: nil,
+                content: .animation(IKLottieConfiguration(id: id, filename: fileName, bundle: .main)),
+                bottomView: bottomView
+            )
         } else {
-            return nil
+            // Fallback to using background image as content, maybe we shouldn't ? We can also return nil…
+            return Slide(
+                backgroundImage: backgroundImage,
+                backgroundImageTintColor: nil,
+                content: .illustration(backgroundImage), // Use background as content
+                bottomView: bottomView
+            )
         }
     }
 }
