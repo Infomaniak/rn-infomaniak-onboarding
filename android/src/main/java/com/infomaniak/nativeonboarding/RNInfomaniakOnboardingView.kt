@@ -1,23 +1,22 @@
 package com.infomaniak.nativeonboarding
 
 import android.content.Context
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.core.graphics.toColorInt
 import com.infomaniak.core.auth.UserExistenceChecker
+import com.infomaniak.core.auth.models.UserLoginResult
 import com.infomaniak.core.auth.utils.LoginUtils
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.lib.login.InfomaniakLogin
@@ -43,7 +42,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     private val onLoginSuccess by EventDispatcher()
     private val onLoginError by EventDispatcher()
 
-    private var infomaniakLogin: InfomaniakLogin? by mutableStateOf(null)
+    private var loginData: LoginData? by mutableStateOf(null)
     private val pages = mutableStateListOf<Page>()
     private var onboardingArgumentColors by mutableStateOf<OnboardingArgumentColors?>(null)
 
@@ -52,26 +51,29 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     init {
         addView(ComposeView(context).apply {
             setContent {
-                infomaniakLogin?.let { infomaniakLogin ->
+                loginData?.let {
                     val scope = rememberCoroutineScope()
-                    val context = LocalContext.current
-                    val launcher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
-                        scope.launch {
-                            val userLoginResult = LoginUtils.getLoginResultAfterWebView(
-                                result = result,
-                                context = context,
-                                infomaniakLogin = infomaniakLogin,
-                                userExistenceChecker = userExistenceChecker,
-                            )
+                    val snackbarHostState = remember { SnackbarHostState() }
 
-                            Log.e("gibran", "on login - userLoginResult: ${userLoginResult}")
+                    val loginFlowController = LoginUtils.rememberLoginFlowController(
+                        infomaniakLogin = it.infomaniakLogin,
+                        userExistenceChecker = userExistenceChecker,
+                    ) { userLoginResult ->
+                        when (userLoginResult) {
+                            is UserLoginResult.Success -> onLoginSuccess(mapOf("accessToken" to userLoginResult.user.apiToken.accessToken))
+                            is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+                            null -> Unit
                         }
                     }
 
                     OnboardingViewContent(
                         pages = pages,
                         colors = { onboardingArgumentColors },
-                        onLoginRequest = { infomaniakLogin.startWebViewLogin(launcher) },
+                        onLoginRequest = { loginFlowController.login() },
+                        onCreateAccount = {
+                            loginFlowController.createAccount(it.createAccountUrl, it.successHost, it.cancelHost)
+                        },
+                        snackbarHostState = snackbarHostState,
                     )
                 }
             }
@@ -108,12 +110,17 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                 appVersionName = it.appVersionName,
             )
 
-            infomaniakLogin = InfomaniakLogin(
-                context = context,
-                loginUrl = it.loginUrl,
-                clientID = it.clientId,
-                appUID = it.redirectURIScheme,
-                accessType = null,
+            loginData = LoginData(
+                InfomaniakLogin(
+                    context = context,
+                    loginUrl = it.loginUrl,
+                    clientID = it.clientId,
+                    appUID = it.redirectURIScheme,
+                    accessType = null,
+                ),
+                createAccountUrl = it.createAccountUrl,
+                successHost = it.successHost,
+                cancelHost = it.cancelHost,
             )
         }
     }
@@ -150,19 +157,29 @@ private fun String.toColor(): Color = Color(toColorInt())
 private fun OnboardingViewContent(
     pages: SnapshotStateList<Page>,
     colors: () -> OnboardingArgumentColors?,
-    onLoginRequest: () -> Unit
+    onLoginRequest: () -> Unit,
+    onCreateAccount: () -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     OnboardingTheme(colors) {
         OnboardingScreen(
             pages = pages,
             onLoginRequest = onLoginRequest,
-            onCreateAccount = {},
+            onCreateAccount = onCreateAccount,
+            snackbarHostState = snackbarHostState,
         )
     }
 }
 
+private data class LoginData(
+    val infomaniakLogin: InfomaniakLogin,
+    val createAccountUrl: String,
+    val successHost: String,
+    val cancelHost: String,
+)
+
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null }, {})
+    OnboardingViewContent(pages, { null }, {}, {}, SnackbarHostState())
 }
