@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.core.graphics.toColorInt
-import com.infomaniak.nativeonboarding.models.OnboardingArgumentColors
-import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.models.LoginConfiguration
+import com.infomaniak.nativeonboarding.models.OnboardingArgumentColors
 import com.infomaniak.nativeonboarding.models.OnboardingConfiguration
+import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
 import com.infomaniak.nativeonboarding.theme.OnboardingTheme
 import expo.modules.kotlin.AppContext
