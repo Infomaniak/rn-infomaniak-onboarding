@@ -1,11 +1,9 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export type Slide = {
-    backgroundImageNameLight: string;
-    backgroundImageNameDark: string;
-    illustrationName: string;
-    illustrationLightThemeName?: string;
-    illustrationDarkThemeName?: string;
+    backgroundImage: StaticIllustration;
+    staticIllustration?: StaticIllustration;
+    animatedIllustration?: AnimatedIllustration;
     title?: string; // defaults to ""
     subtitle?: string; // defaults to ""
 };
