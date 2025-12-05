@@ -55,6 +55,22 @@ See all available options: [src/RNInfomaniakOnboarding.types.ts](src/RNInfomania
 > [!IMPORTANT]
 > Whatever you do, do not use "Expo Go"
 
+### Android configuration
+This project use a module with a custom flavor dimension `distribution` with the flavors `standard` and `fdroid`.
+If the project app doesn't define this dimension, you must tell Gradle which flavor to use when resolving the dependency.
+
+In your **`android/app/build.gradle`**, add the following inside the `android { defaultConfig { ... } }` block:
+
+```gradle
+android {
+    defaultConfig {
+        // Choose the flavor of the library to use when your app 
+        // doesn't define the "distribution" flavor dimension.'
+        missingDimensionStartegy 'distribution', 'standard'
+    }
+}
+```
+
 ## Troubleshooting
 
 * If you use Proxyman, make sure it's correctly setup because if the api calls do not work they app won't be able to run correctly
