@@ -54,16 +54,6 @@ android {
         standard { isDefault = true }
     }
 
-//    variantFilter { variant ->
-//        println("sisi>>> ------------------")
-//        println("sisi>>> varname = " + variant.name)
-//        def hasFdroidFlavours = variant.flavors.each { println("sisi> favor = " + it.name) }.any { it.name == "fdroid" }
-//        if (hasFdroidFlavours) {
-//            println("fdroid variant name = " + variant.name)
-//            variant.ignore = true
-//        }
-//    }
-
     lintOptions {
         abortOnError false
     }
@@ -83,8 +73,6 @@ dependencies {
     implementation 'com.infomaniak.core:Ui.Compose.Basics'
     implementation 'com.infomaniak.core:Ui.Compose.Margin'
     standardImplementation 'com.infomaniak.core:CrossAppLogin.Front'
-//    implementation project(":Core:CrossAppLogin:Back")
-//    implementation project(":Core:CrossAppLogin:Front")
 
     implementation platform(core.compose.bom)
 
