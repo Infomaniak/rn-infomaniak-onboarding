@@ -97,6 +97,8 @@ android {
         targetSdkVersion 35 // Set version manually to match the one in Core and be compatible
         versionCode 1
         versionName "1.0.0"
+
+        missingDimensionStrategy 'distribution', 'standard'
     }
     signingConfigs {
         debug {

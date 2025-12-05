@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: 'maven-publish'
 
 group = 'com.infomaniak.nativeonboarding'
 version = '0.1.0'
@@ -17,7 +18,7 @@ def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.ab
 apply from: expoModulesCorePlugin
 applyKotlinExpoModulesCorePlugin()
 useCoreDependencies()
-useExpoPublishing()
+//useExpoPublishing()
 
 // If you want to use the managed Android SDK versions from expo-modules-core, set this to true.
 // The Android SDK versions will be bumped from time to time in SDK releases and may introduce breaking changes in your module code.
@@ -47,11 +48,33 @@ android {
         versionCode 1
         versionName "0.1.0"
     }
+
+    flavorDimensions "distribution"
+    productFlavors {
+        standard { isDefault = true }
+    }
+
+//    variantFilter { variant ->
+//        println("sisi>>> ------------------")
+//        println("sisi>>> varname = " + variant.name)
+//        def hasFdroidFlavours = variant.flavors.each { println("sisi> favor = " + it.name) }.any { it.name == "fdroid" }
+//        if (hasFdroidFlavours) {
+//            println("fdroid variant name = " + variant.name)
+//            variant.ignore = true
+//        }
+//    }
+
     lintOptions {
         abortOnError false
     }
     buildFeatures {
         compose = true
+    }
+
+    publishing {
+        singleVariant("standardRelease") {
+            withSourcesJar()
+        }
     }
 }
 
@@ -59,6 +82,7 @@ dependencies {
     implementation 'com.infomaniak.core:Onboarding'
     implementation 'com.infomaniak.core:Ui.Compose.Basics'
     implementation 'com.infomaniak.core:Ui.Compose.Margin'
+    standardImplementation 'com.infomaniak.core:CrossAppLogin.Front'
 //    implementation project(":Core:CrossAppLogin:Back")
 //    implementation project(":Core:CrossAppLogin:Front")
 
@@ -72,4 +96,19 @@ dependencies {
 
     implementation core.coil.compose
     implementation core.coil.svg
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.standardRelease
+            }
+        }
+        repositories {
+            maven {
+                url = mavenLocal().url
+            }
+        }
+    }
 }
