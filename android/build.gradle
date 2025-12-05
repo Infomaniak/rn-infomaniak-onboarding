@@ -18,6 +18,7 @@ def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.ab
 apply from: expoModulesCorePlugin
 applyKotlinExpoModulesCorePlugin()
 useCoreDependencies()
+// Expo publish doesn’t support InfomaniakCore submodules, so we handle publishing here with flavor support.
 //useExpoPublishing()
 
 // If you want to use the managed Android SDK versions from expo-modules-core, set this to true.
@@ -86,6 +87,7 @@ dependencies {
     implementation core.coil.svg
 }
 
+// Handle publishing here with only standard flavour
 afterEvaluate {
     publishing {
         publications {
