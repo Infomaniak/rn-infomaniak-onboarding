@@ -18,7 +18,6 @@
 
 import ExpoModulesCore
 import InfomaniakOnboarding
-import SwiftUI
 
 class RNInfomaniakOnboardingView: ExpoView {
     private var onboardingViewController = OnboardingViewController(configuration: .init(headerImage: nil,
