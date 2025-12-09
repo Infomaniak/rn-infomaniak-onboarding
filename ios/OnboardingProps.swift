@@ -127,13 +127,7 @@ struct RNSlide: Record {
                 bottomView: bottomView
             )
         } else {
-            // Fallback to using background image as content, maybe we shouldn't ? We can also return nil…
-            return Slide(
-                backgroundImage: backgroundImage,
-                backgroundImageTintColor: nil,
-                content: .illustration(backgroundImage), // Use background as content
-                bottomView: bottomView
-            )
+            return nil
         }
     }
 }
