@@ -45,12 +45,20 @@ struct RNOnboardingConfiguration: Record {
 
     @MainActor
     func toOnboardingConfiguration() -> OnboardingConfiguration {
-        OnboardingConfiguration(
+        let primaryColor = UIColor { traitCollection in
+            if traitCollection.userInterfaceStyle == .dark {
+                return colorFromHex(primaryColorDark)
+            } else {
+                return colorFromHex(primaryColorLight)
+            }
+        }
+
+        return OnboardingConfiguration(
             headerImage: nil,
             slides: slides.enumerated().compactMap { index, slide in
                 slide.toSlide(id: index)
             },
-            pageIndicatorColor: colorFromHex(primaryColorLight),
+            pageIndicatorColor: primaryColor,
             isScrollEnabled: isScrollEnabled,
             dismissHandler: nil,
             isPageIndicatorHidden: isPageIndicatorHidden
