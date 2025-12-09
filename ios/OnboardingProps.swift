@@ -119,11 +119,11 @@ struct RNSlide: Record {
         } else if let animatedIllustration,
                   let fileName = animatedIllustration["fileName"]
         {
-            // let bundle = Bundle(for: RNInfomaniakOnboardingModule.self)
+            let bundle = Bundle(for: RNInfomaniakOnboardingModule.self)
             return Slide(
                 backgroundImage: backgroundImage,
                 backgroundImageTintColor: nil,
-                content: .animation(IKLottieConfiguration(id: id, filename: fileName, bundle: .main)),
+                content: .animation(IKLottieConfiguration(id: id, filename: fileName, bundle: bundle)),
                 bottomView: bottomView
             )
         } else {

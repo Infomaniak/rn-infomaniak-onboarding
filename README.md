@@ -64,7 +64,7 @@
 ### How to set images on iOS 🍏
 
 + 🌄 For static images: simply use the `.xcassets` as normal. `iosAssetName` == the name in the `.xcassets`
-+ 🎥 For Lottie animation: Create  a folder `Animations/` somewhere with all animation in it, then simply drag and drop the `Resources` folder into xCode, select the target, it'll update the `.pbxbroj` to set the access to these lotti anim without the full path, only with name (with extension), Alternatively you can copy the animations, one by one in the root xcode proj (always select the target)
++ 🎥 For Lottie animation: Create  a folder `Animations/` somewhere with all animation in it, then simply drag and drop the `Resources` folder into xCode, select the target, it'll update the `.pbxbroj` to set the access to these lotti anim without the full path, only with name (with extension)
 + 🐲 DotLottie: Coming soon… 🥹
 
 ## Troubleshooting

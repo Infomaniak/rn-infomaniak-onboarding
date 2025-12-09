@@ -3,8 +3,8 @@ import { SafeAreaView, Alert } from 'react-native';
 
 export default function App() {
     let configuration: OnboardingConfiguration = {
-        primaryColorLight: '#0088B2',
-        primaryColorDark: '#8DCFF1',
+        primaryColorLight: '#000000ff',
+        primaryColorDark: '#ffffffff',
         onPrimaryColorLight: '#FFFFFF', // Specific to Android theme
         onPrimaryColorDark: '#003547', // Specific to Android theme
         slides: [
