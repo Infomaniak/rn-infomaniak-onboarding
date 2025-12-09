@@ -74,9 +74,9 @@ final class LoginHandler: InfomaniakLoginDelegate, ObservableObject {
             hideCreateAccountButton: true
         ) { [weak self] result in
             switch result {
-            case .success(let result):
+            case let .success(result):
                 self?.loginSuccessful(code: result.code, codeVerifier: result.verifier)
-            case .failure(let error):
+            case let .failure(error):
                 self?.loginFailed(error: error)
             }
         }
@@ -107,6 +107,7 @@ final class LoginHandler: InfomaniakLoginDelegate, ObservableObject {
 
 struct OnboardingBottomButtonsView: View {
     @ObservedObject var loginHandler: LoginHandler
+
     var body: some View {
         Button("Login") {
             loginHandler.login()
@@ -170,15 +171,15 @@ class RNInfomaniakOnboardingView: ExpoView {
 }
 
 extension RNInfomaniakOnboardingView: OnboardingViewControllerDelegate {
-    func shouldAnimateBottomViewForIndex(_ index: Int) -> Bool {
+    func shouldAnimateBottomViewForIndex(_: Int) -> Bool {
         return false
     }
 
-    func willDisplaySlideViewCell(_ slideViewCell: InfomaniakOnboarding.SlideCollectionViewCell, at index: Int) {}
+    func willDisplaySlideViewCell(_: InfomaniakOnboarding.SlideCollectionViewCell, at _: Int) {}
 
-    func bottomViewForIndex(_ index: Int) -> (any View)? {
+    func bottomViewForIndex(_: Int) -> (any View)? {
         return OnboardingBottomButtonsView(loginHandler: loginHandler)
     }
 
-    func currentIndexChanged(newIndex: Int) {}
+    func currentIndexChanged(newIndex _: Int) {}
 }

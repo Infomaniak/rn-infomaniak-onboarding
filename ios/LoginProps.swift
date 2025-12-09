@@ -28,13 +28,21 @@ struct RNLoginConfiguration: Record {
     var loginURL = "https://login.infomaniak.com/"
 
     @Field
-    var redirectURI: String?
+    var redirectURIScheme: String?
+
+    var redirectURI: String {
+        if let scheme = redirectURIScheme, !scheme.isEmpty {
+            return scheme + "://oauth2redirect"
+        } else {
+            return "\(Bundle.main.bundleIdentifier ?? "")://oauth2redirect"
+        }
+    }
 
     func toLoginConfiguration() -> InfomaniakLogin.Config {
         InfomaniakLogin.Config(
             clientId: clientId,
             loginURL: URL(string: loginURL)!,
-            redirectURI: redirectURI ?? "\(Bundle.main.bundleIdentifier ?? "")://oauth2redirect"
+            redirectURI: redirectURI
         )
     }
 }

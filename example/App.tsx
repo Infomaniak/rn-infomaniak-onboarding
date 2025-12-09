@@ -1,5 +1,5 @@
-import { OnboardingConfiguration, RNInfomaniakOnboardingView } from 'rn-infomaniak-onboarding';
-import { SafeAreaView, Alert } from 'react-native';
+import { Alert, SafeAreaView } from 'react-native';
+import { LoginConfiguration, OnboardingConfiguration, RNInfomaniakOnboardingView } from 'rn-infomaniak-onboarding';
 
 export default function App() {
     let configuration: OnboardingConfiguration = {
@@ -58,9 +58,17 @@ export default function App() {
         ],
     };
 
+    let loginConfiguration: LoginConfiguration = {
+        clientId: '20af5539-a4fb-421c-b45a-f43af3d90c14',
+        redirectURIScheme: 'com.infomaniak.chat',
+        appVersionCode: 1,
+        appVersionName: '1.0.0',
+    };
+
     return (
         <SafeAreaView style={styles.view}>
             <RNInfomaniakOnboardingView
+                loginConfiguration={loginConfiguration}
                 onboardingConfiguration={configuration}
                 onLoginSuccess={(event) => {
                     Alert.alert('Login Success', event.nativeEvent.accessToken);
