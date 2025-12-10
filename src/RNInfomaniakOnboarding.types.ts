@@ -34,6 +34,9 @@ export type LoginConfiguration = {
   redirectURIScheme: string; // The "appbundleid" part in the redirect URI of the form "appbundleid://oauth2redirect"
   appVersionCode: number; // The Android build number. For api call headers and the user agent
   appVersionName: string; // App version like "2.14.8". For api call headers and the user agent
+  createAccountUrl: string; // Url to create the account specific to this app. E.g. https://welcome.infomaniak.com/signup/...
+  successHost?: string; // Url to detect that the login has finished with success. By default "ksuite.infomaniak.com"
+  cancelHost?: string; // Url to detect that the login has finished with an error. By default "welcome.infomaniak.com"
 };
 
 export type OnLoginSuccessEventPayload = {
