@@ -1,38 +1,48 @@
+/*
+ Infomaniak RNOnboarding - iOS
+ Copyright (C) 2025 Infomaniak Network SA
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import ExpoModulesCore
-import WebKit
+import InfomaniakOnboarding
 
-// This view will be used as a native component. Make sure to inherit from `ExpoView`
-// to apply the proper styling (e.g. border radius and shadows).
 class RNInfomaniakOnboardingView: ExpoView {
-  let webView = WKWebView()
-  let onLoad = EventDispatcher()
-  var delegate: WebViewDelegate?
+    private var onboardingViewController = OnboardingViewController(configuration: .init(headerImage: nil,
+                                                                                         slides: [],
+                                                                                         pageIndicatorColor: nil,
+                                                                                         isScrollEnabled: true,
+                                                                                         dismissHandler: nil,
+                                                                                         isPageIndicatorHidden: false))
+    let onLoad = EventDispatcher()
 
-  required init(appContext: AppContext? = nil) {
-    super.init(appContext: appContext)
-    clipsToBounds = true
-    delegate = WebViewDelegate { url in
-      self.onLoad(["url": url])
+    required init(appContext: AppContext? = nil) {
+        super.init(appContext: appContext)
+        clipsToBounds = true
+
+        addSubview(onboardingViewController.view)
     }
-    webView.navigationDelegate = delegate
-    addSubview(webView)
-  }
 
-  override func layoutSubviews() {
-    webView.frame = bounds
-  }
-}
-
-class WebViewDelegate: NSObject, WKNavigationDelegate {
-  let onUrlChange: (String) -> Void
-
-  init(onUrlChange: @escaping (String) -> Void) {
-    self.onUrlChange = onUrlChange
-  }
-
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-    if let url = webView.url {
-      onUrlChange(url.absoluteString)
+    override func layoutSubviews() {
+        onboardingViewController.view.frame = bounds
     }
-  }
+
+    func setConfiguration(_ configuration: RNOnboardingConfiguration) {
+        onboardingViewController.view.removeFromSuperview()
+
+        onboardingViewController = OnboardingViewController(configuration: configuration.toOnboardingConfiguration())
+        addSubview(onboardingViewController.view)
+    }
 }
