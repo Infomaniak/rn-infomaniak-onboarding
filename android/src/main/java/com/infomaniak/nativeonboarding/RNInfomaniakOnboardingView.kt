@@ -39,12 +39,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     init {
         addView(ComposeView(context).apply {
             setContent {
-                OnboardingViewContent(
-                    pages = pages,
-                    colors = { onboardingArgumentColors },
-                    onMissingAsset = ::reportMissingAsset,
-                    onMissingIllustration = ::reportMissingIllustration,
-                )
+                OnboardingViewContent(pages, { onboardingArgumentColors })
             }
         })
     }
@@ -104,19 +99,12 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 private fun String.toColor(): Color = Color(toColorInt())
 
 @Composable
-private fun OnboardingViewContent(
-    pages: SnapshotStateList<Page>,
-    colors: () -> OnboardingArgumentColors?,
-    onMissingAsset: (fileName: String) -> Unit,
-    onMissingIllustration: () -> Unit,
-) {
+private fun OnboardingViewContent(pages: SnapshotStateList<Page>, colors: () -> OnboardingArgumentColors?) {
     OnboardingTheme(colors) {
         OnboardingScreen(
             pages = pages,
             onLoginRequest = {},
             onCreateAccount = {},
-            onMissingAsset = onMissingAsset,
-            onMissingIllustration = onMissingIllustration,
         )
     }
 }
@@ -124,5 +112,5 @@ private fun OnboardingViewContent(
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null }, {}, {})
+    OnboardingViewContent(pages, { null })
 }
