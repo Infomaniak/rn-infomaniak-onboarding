@@ -9,15 +9,15 @@ export type Slide = {
 };
 
 export type StaticIllustration = {
-    androidLightFileName: string;
-    androidDarkFileName: string;
-    iosAssetName: string;
+  androidLightFileName: string;
+  androidDarkFileName: string;
+  iosAssetName: string;
 };
 
 export type AnimatedIllustration = {
-    fileName: string;
-    lightThemeName?: string;
-    darkThemeName?: string;
+  fileName: string;
+  lightThemeName?: string;
+  darkThemeName?: string;
 };
 
 export type OnboardingConfiguration = {

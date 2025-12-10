@@ -17,20 +17,32 @@
  */
 
 import ExpoModulesCore
+import Foundation
+import InfomaniakLogin
 
-public class RNInfomaniakOnboardingModule: Module {
-    public func definition() -> ModuleDefinition {
-        Name("RNInfomaniakOnboarding")
-        View(RNInfomaniakOnboardingView.self) {
-            Prop("onboardingConfiguration") { (view: RNInfomaniakOnboardingView, prop: RNOnboardingConfiguration) in
-                view.setConfiguration(prop)
-            }
+struct RNLoginConfiguration: Record {
+    @Field
+    var clientId: String
 
-            Prop("loginConfiguration") { (view: RNInfomaniakOnboardingView, prop: RNLoginConfiguration) in
-                view.setConfiguration(prop)
-            }
+    @Field
+    var loginURL = "https://login.infomaniak.com/"
 
-            Events("onLoginSuccess", "onLoginError")
+    @Field
+    var redirectURIScheme: String?
+
+    var redirectURI: String {
+        if let scheme = redirectURIScheme, !scheme.isEmpty {
+            return scheme + "://oauth2redirect"
+        } else {
+            return "\(Bundle.main.bundleIdentifier ?? "")://oauth2redirect"
         }
+    }
+
+    func toLoginConfiguration() -> InfomaniakLogin.Config {
+        InfomaniakLogin.Config(
+            clientId: clientId,
+            loginURL: URL(string: loginURL)!,
+            redirectURI: redirectURI
+        )
     }
 }
