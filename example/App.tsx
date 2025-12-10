@@ -65,7 +65,7 @@ export default function App() {
           Alert.alert('Login Success', event.nativeEvent.accessToken);
         }}
         onLoginError={(event) => {
-          Alert.alert('Login Error', event.nativeEvent.error);
+          console.error(`Login Error: ${event.nativeEvent.error}`);
         }}
         style={styles.view}
       />
