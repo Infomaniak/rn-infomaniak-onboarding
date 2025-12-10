@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.core.graphics.toColorInt
-import com.infomaniak.nativeonboarding.models.OnboardingArgumentColors
-import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.models.LoginConfiguration
+import com.infomaniak.nativeonboarding.models.OnboardingArgumentColors
 import com.infomaniak.nativeonboarding.models.OnboardingConfiguration
+import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
 import com.infomaniak.nativeonboarding.theme.OnboardingTheme
 import expo.modules.kotlin.AppContext
@@ -34,7 +34,11 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     init {
         addView(ComposeView(context).apply {
             setContent {
-                OnboardingViewContent(pages, { onboardingArgumentColors })
+                OnboardingViewContent(
+                    pages = pages,
+                    colors = { onboardingArgumentColors },
+                    onMissingAsset = { reportError("Missing file '$it' in Android assets folders") }
+                )
             }
         })
     }
@@ -54,17 +58,30 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     fun setLoginConfig(config: LoginConfiguration?) {
         // TODO
     }
+
+    private fun reportAccessToken(accessToken: String) {
+        onLoginSuccess(mapOf("accessToken" to accessToken))
+    }
+
+    private fun reportError(errorMessage: String) {
+        onLoginError(mapOf("error" to errorMessage))
+    }
 }
 
 private fun String.toColor(): Color = Color(toColorInt())
 
 @Composable
-private fun OnboardingViewContent(pages: SnapshotStateList<Page>, colors: () -> OnboardingArgumentColors?) {
+private fun OnboardingViewContent(
+    pages: SnapshotStateList<Page>,
+    colors: () -> OnboardingArgumentColors?,
+    onMissingAsset: (fileName: String) -> Unit,
+) {
     OnboardingTheme(colors) {
         OnboardingScreen(
             pages = pages,
             onLoginRequest = {},
             onCreateAccount = {},
+            onMissingAsset = onMissingAsset,
         )
     }
 }
@@ -72,5 +89,5 @@ private fun OnboardingViewContent(pages: SnapshotStateList<Page>, colors: () -> 
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null })
+    OnboardingViewContent(pages, { null }, {})
 }

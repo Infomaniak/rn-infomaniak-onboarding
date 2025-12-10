@@ -1,6 +1,5 @@
 package com.infomaniak.nativeonboarding
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +45,7 @@ fun OnboardingScreen(
     pages: SnapshotStateList<Page>,
     onLoginRequest: () -> Unit,
     onCreateAccount: () -> Unit,
+    onMissingAsset: (fileName: String) -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
@@ -53,7 +53,7 @@ fun OnboardingScreen(
 
     OnboardingScaffold(
         pagerState = pagerState,
-        onboardingPages = pages.mapIndexed { index, page -> page.toOnboardingPage(pagerState, index) },
+        onboardingPages = pages.mapIndexed { index, page -> page.toOnboardingPage(pagerState, index, onMissingAsset) },
         bottomContent = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -75,11 +75,22 @@ fun OnboardingScreen(
 }
 
 @Composable
-private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): OnboardingPage = OnboardingPage(
+private fun Page.toOnboardingPage(
+    pagerState: PagerState,
+    index: Int,
+    onMissingAsset: (fileName: String) -> Unit,
+): OnboardingPage = OnboardingPage(
     background = {
+        val fileName = backgroundImage.fileName
+
+        if (fileName.assetFileExists().not()) {
+            onMissingAsset(fileName)
+            return@OnboardingPage
+        }
+
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/${backgroundImage.fileName}")
+                .data("file:///android_asset/${fileName}")
                 .build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
@@ -88,20 +99,32 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
     },
     illustration = {
         animatedIllustration?.let {
-            ThemedDotLottie(
-                source = OnboardingLottieSource.Asset(it.fileName),
-                isCurrentPageVisible = { pagerState.currentPage == index },
-                themeId = { it.themeName },
-            )
+            val fileName = it.fileName
+
+            if (fileName.assetFileExists()) {
+                ThemedDotLottie(
+                    source = OnboardingLottieSource.Asset(fileName),
+                    isCurrentPageVisible = { pagerState.currentPage == index },
+                    themeId = { it.themeName },
+                )
+            } else {
+                onMissingAsset(fileName)
+            }
         } ?: staticIllustration?.let {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("file:///android_asset/${it.fileName}")
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit,
-            )
+            val fileName = it.fileName
+
+            if (fileName.assetFileExists()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data("file:///android_asset/$fileName")
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
+            } else {
+                onMissingAsset(fileName)
+            }
         }
     },
     text = {
@@ -114,6 +137,9 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
     }
 )
 
+@Composable
+private fun String.assetFileExists(): Boolean = LocalContext.current.resources.assets.list("")?.contains(this) == true
+
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
@@ -123,6 +149,7 @@ private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: Snaps
                 pages = pages,
                 onLoginRequest = {},
                 onCreateAccount = {},
+                onMissingAsset = {},
             )
         }
     }
