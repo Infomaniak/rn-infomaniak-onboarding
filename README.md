@@ -1,6 +1,31 @@
 # Onboarding library
 
-## How to run on Android
+## How to use this library in an Expo module
+
+This library provides a RNInfomaniakOnboardingView component that displays the onboarding screens and manages the entire login
+flow. After a successful login, the view returns an access token.
+
+### Basic usage
+```tsx
+<RNInfomaniakOnboardingView
+    loginConfiguration={{
+    ...
+    }}
+    onboardingConfiguration={{
+    ...
+    }}
+    onLoginSuccess={(accessToken) => console.log(event.nativeEvent.accessToken)}
+    onLoginError={(event) => console.error(event.nativeEvent.error)}
+/>
+```
+
+### Configuration
+
+Check the example app: [example/App.tsx](example/App.tsx)
+
+See all available options: [src/RNInfomaniakOnboarding.types.ts](src/RNInfomaniakOnboarding.types.ts)
+
+## Developing the library on Android
 
 1. Install Node.js
    https://nodejs.org/en/download
