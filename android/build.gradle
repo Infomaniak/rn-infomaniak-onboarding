@@ -75,6 +75,7 @@ dependencies {
     implementation 'com.infomaniak.core:Onboarding'
     implementation 'com.infomaniak.core:Ui.Compose.Basics'
     implementation 'com.infomaniak.core:Ui.Compose.Margin'
+    implementation 'com.infomaniak.core:Ui.View'
     standardImplementation 'com.infomaniak.core:CrossAppLogin.Front'
 
     implementation platform(core.compose.bom)
