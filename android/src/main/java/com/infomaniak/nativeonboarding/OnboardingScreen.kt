@@ -93,6 +93,15 @@ private fun Page.toOnboardingPage(pagerState: PagerState, index: Int): Onboardin
                 isCurrentPageVisible = { pagerState.currentPage == index },
                 themeId = { it.themeName },
             )
+        } ?: staticIllustration?.let {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("file:///android_asset/${it.fileName}")
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
         }
     },
     text = {
