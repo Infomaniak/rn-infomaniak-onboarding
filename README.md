@@ -19,11 +19,28 @@ flow. After a successful login, the view returns an access token.
 />
 ```
 
-### Configuration
+### React Native Configuration
 
 Check the example app: [example/App.tsx](example/App.tsx)
 
 See all available options: [src/RNInfomaniakOnboarding.types.ts](src/RNInfomaniakOnboarding.types.ts)
+
+### Android configuration
+
+This project use a module with a custom flavor dimension `distribution` with the flavors `standard` and `fdroid`.
+If the project app doesn't define this dimension, you must tell Gradle which flavor to use when resolving the dependency.
+
+In your **`android/app/build.gradle`**, add the following inside the `android { defaultConfig { ... } }` block:
+
+```gradle
+android {
+    defaultConfig {
+        // Choose the flavor of the library to use when your app 
+        // doesn't define the "distribution" flavor dimension.'
+        missingDimensionStartegy 'distribution', 'standard'
+    }
+}
+```
 
 ## Developing the library on Android
 
