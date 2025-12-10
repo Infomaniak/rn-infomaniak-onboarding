@@ -33,6 +33,7 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultTit
 import com.infomaniak.core.onboarding.components.OnboardingComponents.ThemedDotLottie
 import com.infomaniak.core.onboarding.models.OnboardingLottieSource
 import com.infomaniak.core.ui.compose.basics.Typography
+import com.infomaniak.nativeonboarding.assetFileExists
 import com.infomaniak.nativeonboarding.models.AnimatedIllustration
 import com.infomaniak.nativeonboarding.models.Page
 import com.infomaniak.nativeonboarding.models.StaticIllustration
@@ -149,9 +150,6 @@ private fun Page.toOnboardingPage(
         )
     }
 )
-
-@Composable
-private fun String.assetFileExists(): Boolean = LocalContext.current.resources.assets.list("")?.contains(this) == true
 
 @Preview
 @Composable
