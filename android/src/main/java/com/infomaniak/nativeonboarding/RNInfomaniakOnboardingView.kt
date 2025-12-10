@@ -37,7 +37,8 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                 OnboardingViewContent(
                     pages = pages,
                     colors = { onboardingArgumentColors },
-                    onMissingAsset = { reportError("Missing file '$it' in Android assets folders") }
+                    onMissingAsset = { reportError("Missing file '$it' in Android assets folders") },
+                    onMissingIllustration = { reportError("Missing illustration. Provide either a StaticIllustration or an AnimatedIllustration instance in each slide") },
                 )
             }
         })
@@ -75,6 +76,7 @@ private fun OnboardingViewContent(
     pages: SnapshotStateList<Page>,
     colors: () -> OnboardingArgumentColors?,
     onMissingAsset: (fileName: String) -> Unit,
+    onMissingIllustration: () -> Unit,
 ) {
     OnboardingTheme(colors) {
         OnboardingScreen(
@@ -82,6 +84,7 @@ private fun OnboardingViewContent(
             onLoginRequest = {},
             onCreateAccount = {},
             onMissingAsset = onMissingAsset,
+            onMissingIllustration = onMissingIllustration,
         )
     }
 }
@@ -89,5 +92,5 @@ private fun OnboardingViewContent(
 @Preview
 @Composable
 private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null }, {})
+    OnboardingViewContent(pages, { null }, {}, {})
 }

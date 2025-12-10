@@ -33,7 +33,9 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultTit
 import com.infomaniak.core.onboarding.components.OnboardingComponents.ThemedDotLottie
 import com.infomaniak.core.onboarding.models.OnboardingLottieSource
 import com.infomaniak.core.ui.compose.basics.Typography
+import com.infomaniak.nativeonboarding.models.AnimatedIllustration
 import com.infomaniak.nativeonboarding.models.Page
+import com.infomaniak.nativeonboarding.models.StaticIllustration
 import com.infomaniak.nativeonboarding.preview.PagesPreviewParameter
 import com.infomaniak.nativeonboarding.theme.LocalCustomColors
 import com.infomaniak.nativeonboarding.theme.OnboardingTheme
@@ -46,6 +48,7 @@ fun OnboardingScreen(
     onLoginRequest: () -> Unit,
     onCreateAccount: () -> Unit,
     onMissingAsset: (fileName: String) -> Unit,
+    onMissingIllustration: () -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
@@ -53,7 +56,14 @@ fun OnboardingScreen(
 
     OnboardingScaffold(
         pagerState = pagerState,
-        onboardingPages = pages.mapIndexed { index, page -> page.toOnboardingPage(pagerState, index, onMissingAsset) },
+        onboardingPages = pages.mapIndexed { index, page ->
+            page.toOnboardingPage(
+                pagerState = pagerState,
+                index = index,
+                onMissingAsset = onMissingAsset,
+                onMissingIllustration = onMissingIllustration,
+            )
+        },
         bottomContent = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -79,6 +89,7 @@ private fun Page.toOnboardingPage(
     pagerState: PagerState,
     index: Int,
     onMissingAsset: (fileName: String) -> Unit,
+    onMissingIllustration: () -> Unit,
 ): OnboardingPage = OnboardingPage(
     background = {
         val fileName = backgroundImage.fileName
@@ -98,33 +109,35 @@ private fun Page.toOnboardingPage(
         )
     },
     illustration = {
-        animatedIllustration?.let {
-            val fileName = it.fileName
-
-            if (fileName.assetFileExists()) {
-                ThemedDotLottie(
-                    source = OnboardingLottieSource.Asset(fileName),
-                    isCurrentPageVisible = { pagerState.currentPage == index },
-                    themeId = { it.themeName },
-                )
-            } else {
-                onMissingAsset(fileName)
+        when (val illustration = animatedIllustration ?: staticIllustration) {
+            is AnimatedIllustration -> {
+                val fileName = illustration.fileName
+                if (fileName.assetFileExists()) {
+                    ThemedDotLottie(
+                        source = OnboardingLottieSource.Asset(fileName),
+                        isCurrentPageVisible = { pagerState.currentPage == index },
+                        themeId = { illustration.themeName },
+                    )
+                } else {
+                    onMissingAsset(fileName)
+                }
             }
-        } ?: staticIllustration?.let {
-            val fileName = it.fileName
-
-            if (fileName.assetFileExists()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data("file:///android_asset/$fileName")
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                )
-            } else {
-                onMissingAsset(fileName)
+            is StaticIllustration -> {
+                val fileName = illustration.fileName
+                if (fileName.assetFileExists()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("file:///android_asset/$fileName")
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit,
+                    )
+                } else {
+                    onMissingAsset(fileName)
+                }
             }
+            null -> onMissingIllustration()
         }
     },
     text = {
@@ -150,6 +163,7 @@ private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: Snaps
                 onLoginRequest = {},
                 onCreateAccount = {},
                 onMissingAsset = {},
+                onMissingIllustration = {},
             )
         }
     }
