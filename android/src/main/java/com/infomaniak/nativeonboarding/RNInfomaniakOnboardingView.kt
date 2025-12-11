@@ -1,8 +1,12 @@
 package com.infomaniak.nativeonboarding
 
 import android.content.Context
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,9 +19,18 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.core.auth.UserExistenceChecker
 import com.infomaniak.core.auth.models.UserLoginResult
+import com.infomaniak.core.auth.utils.LoginFlowController
 import com.infomaniak.core.auth.utils.LoginUtils
+import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
+import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.AccountsCheckingState
+import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.crossapplogin.front.previews.AccountsCheckingStatePreviewParameter
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.nativeonboarding.models.AnimatedIllustration
@@ -36,6 +49,16 @@ import kotlinx.coroutines.launch
 private const val SUCCESS_EVENT_KEY = "accessTokens"
 private const val ERROR_EVENT_KEY = "error"
 
+
+class CrossAppLoginViewModelFactory(
+    private val applicationId: String,
+    private val clientId: String,
+) : ViewModelProvider.NewInstanceFactory() {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = CrossAppLoginViewModel(applicationId, clientId) as T
+}
+
+
 class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
     // Creates and initializes an event dispatcher for the `onLoginSuccess` and `onLoginError` events.
     // The name of the event is inferred from the value and needs to match the event name defined in the module.
@@ -48,15 +71,31 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 
     private val userExistenceChecker = UserExistenceChecker { false }
 
+    private var areButtonsLoading by mutableStateOf(false)
+
     init {
         addView(ComposeView(context).apply {
             setContent {
-                loginData?.let {
-                    val scope = rememberCoroutineScope()
-                    val snackbarHostState = remember { SnackbarHostState() }
+                val scope = rememberCoroutineScope()
+                val snackbarHostState = remember { SnackbarHostState() }
+
+                loginData?.let { loginData ->
+                    val crossAppLoginViewModel = viewModel<CrossAppLoginViewModel>(
+                        factory = CrossAppLoginViewModelFactory(loginData.applicationId, loginData.clientId)
+                    )
+
+                    val hostActivity = LocalActivity.current as ComponentActivity
+                    LaunchedEffect(crossAppLoginViewModel) {
+                        crossAppLoginViewModel.activateUpdates(hostActivity, singleSelection = true)
+                    }
+
+                    val accounts by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
+                    val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()
+
+                    Log.i(TAG, "Got ${accounts.checkedAccounts.count()} accounts from other apps")
 
                     val loginFlowController = LoginUtils.rememberLoginFlowController(
-                        infomaniakLogin = it.infomaniakLogin,
+                        infomaniakLogin = loginData.infomaniakLogin,
                         userExistenceChecker = userExistenceChecker,
                     ) { userLoginResult ->
                         when (userLoginResult) {
@@ -64,15 +103,27 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                             is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
                             null -> Unit
                         }
+
+                        if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
                     }
 
                     OnboardingViewContent(
                         pages = pages,
                         colors = { onboardingArgumentColors },
-                        onLoginRequest = { loginFlowController.login() },
-                        onCreateAccount = {
-                            loginFlowController.createAccount(it.createAccountUrl, it.successHost, it.cancelHost)
+                        accounts = { accounts },
+                        skippedIds = { skippedIds },
+                        isLoginButtonLoading = { areButtonsLoading },
+                        isSignUpButtonLoading = { areButtonsLoading },
+                        onLoginRequest = { accounts ->
+                            val account = accounts.singleOrNull()
+                            if (account == null) {
+                                openLoginWebView(loginFlowController)
+                            } else {
+                                scope.launch { connectSelectedAccount(account, crossAppLoginViewModel, snackbarHostState) }
+                            }
                         },
+                        onCreateAccount = { openAccountCreation(loginFlowController, loginData) },
+                        onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
                         snackbarHostState = snackbarHostState,
                     )
                 }
@@ -118,11 +169,53 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                     appUID = it.redirectURIScheme,
                     accessType = null,
                 ),
+                clientId = it.clientId,
+                applicationId = it.redirectURIScheme,
                 createAccountUrl = it.createAccountUrl,
                 successHost = it.successHost,
                 cancelHost = it.cancelHost,
             )
         }
+    }
+
+    private fun openLoginWebView(loginFlowController: LoginFlowController) {
+        startLoadingLoginButtons()
+        loginFlowController.login()
+    }
+
+    private fun openAccountCreation(loginFlowController: LoginFlowController, loginData: LoginData) {
+        startLoadingLoginButtons()
+        loginFlowController.createAccount(loginData.createAccountUrl, loginData.successHost, loginData.cancelHost)
+    }
+
+    private suspend fun connectSelectedAccount(
+        account: ExternalAccount,
+        viewModel: BaseCrossAppLoginViewModel,
+        snackbarHostState: SnackbarHostState,
+    ) {
+        startLoadingLoginButtons()
+        val loginResult = viewModel.attemptLogin(selectedAccounts = listOf(account))
+        loginUsers(loginResult, snackbarHostState)
+        loginResult.errorMessageIds.forEach { messageResId -> snackbarHostState.showSnackbar(context.getString(messageResId)) }
+    }
+
+    private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
+        // TODO: Handle case where it failed and returned no tokens
+        when (val result = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, context, userExistenceChecker).single()) {
+            is UserLoginResult.Success -> reportAccessToken(result.user.apiToken.accessToken)
+            is UserLoginResult.Failure -> {
+                stopLoadingLoginButtons()
+                snackbarHostState.showSnackbar(result.errorMessage)
+            }
+        }
+    }
+
+    private fun startLoadingLoginButtons() {
+        areButtonsLoading = true
+    }
+
+    private fun stopLoadingLoginButtons() {
+        areButtonsLoading = false
     }
 
     private fun reportAccessToken(accessToken: String) {
@@ -149,6 +242,10 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
         if (androidDarkFileName.assetFileExists(context).not()) reportMissingAsset(androidDarkFileName)
         if (androidLightFileName.assetFileExists(context).not()) reportMissingAsset(androidLightFileName)
     }
+
+    companion object {
+        private val TAG = RNInfomaniakOnboardingView::class.java.simpleName
+    }
 }
 
 private fun String.toColor(): Color = Color(toColorInt())
@@ -157,15 +254,25 @@ private fun String.toColor(): Color = Color(toColorInt())
 private fun OnboardingViewContent(
     pages: SnapshotStateList<Page>,
     colors: () -> OnboardingArgumentColors?,
-    onLoginRequest: () -> Unit,
+    accounts: () -> AccountsCheckingState,
+    skippedIds: () -> Set<Long>,
+    isLoginButtonLoading: () -> Boolean,
+    isSignUpButtonLoading: () -> Boolean,
+    onLoginRequest: (List<ExternalAccount>) -> Unit,
     onCreateAccount: () -> Unit,
+    onSaveSkippedAccounts: (Set<Long>) -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
     OnboardingTheme(colors) {
         OnboardingScreen(
             pages = pages,
+            accountsCheckingState = accounts,
+            skippedIds = skippedIds,
+            isLoginButtonLoading = isLoginButtonLoading,
+            isSignUpButtonLoading = isSignUpButtonLoading,
             onLoginRequest = onLoginRequest,
             onCreateAccount = onCreateAccount,
+            onSaveSkippedAccounts = onSaveSkippedAccounts,
             snackbarHostState = snackbarHostState,
         )
     }
@@ -173,6 +280,8 @@ private fun OnboardingViewContent(
 
 private data class LoginData(
     val infomaniakLogin: InfomaniakLogin,
+    val clientId: String,
+    val applicationId: String,
     val createAccountUrl: String,
     val successHost: String,
     val cancelHost: String,
@@ -180,6 +289,20 @@ private data class LoginData(
 
 @Preview
 @Composable
-private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>) {
-    OnboardingViewContent(pages, { null }, {}, {}, SnackbarHostState())
+private fun Preview(
+    @PreviewParameter(PagesPreviewParameter::class) pages: SnapshotStateList<Page>,
+    @PreviewParameter(AccountsCheckingStatePreviewParameter::class) accounts: AccountsCheckingState,
+) {
+    OnboardingViewContent(
+        pages = pages,
+        colors = { null },
+        accounts = { accounts },
+        skippedIds = { emptySet() },
+        isLoginButtonLoading = { false },
+        isSignUpButtonLoading = { false },
+        onLoginRequest = {},
+        onCreateAccount = {},
+        onSaveSkippedAccounts = {},
+        snackbarHostState = SnackbarHostState(),
+    )
 }
