@@ -90,6 +90,9 @@ dependencies {
     implementation core.coil.svg
 
     implementation core.activity.compose
+//    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0"
+//    TODO: Find out if this can be defined inside a libs.versions.toml (manual vertsionCatalogs {} definition because module is not top level?)
 }
 
 // Handle publishing here with only standard flavour
