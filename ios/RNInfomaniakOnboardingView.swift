@@ -31,8 +31,12 @@ struct OnboardingBottomButtonsView: View {
     @ObservedObject var loginHandler: LoginHandler
 
     var body: some View {
-        Button("Login") {
-            loginHandler.login()
+        if loginHandler.isLoading {
+            ProgressView()
+        } else {
+            Button("Login") {
+                loginHandler.login()
+            }
         }
     }
 }
