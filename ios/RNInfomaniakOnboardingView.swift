@@ -17,93 +17,15 @@
  */
 
 import AuthenticationServices
+import DeviceAssociation
 import ExpoModulesCore
+import InfomaniakCore
 import InfomaniakDI
 import InfomaniakLogin
 import InfomaniakOnboarding
 import OSLog
+import Sentry
 import SwiftUI
-
-@MainActor
-final class LoginHandler: InfomaniakLoginDelegate, ObservableObject {
-    @LazyInjectService private var loginService: InfomaniakLoginable
-    @LazyInjectService private var tokenService: InfomaniakNetworkLoginable
-
-    @Published var isLoading = false
-
-    let onLoginSuccess: EventDispatcher
-    let onLoginError: EventDispatcher
-
-    init(onLoginSuccess: EventDispatcher, onLoginError: EventDispatcher) {
-        self.onLoginSuccess = onLoginSuccess
-        self.onLoginError = onLoginError
-    }
-
-    nonisolated func didCompleteLoginWith(code: String, verifier: String) {
-        Task {
-            await loginSuccessful(code: code, codeVerifier: verifier)
-        }
-    }
-
-    nonisolated func didFailLoginWith(error: Error) {
-        Task {
-            await loginFailed(error: error)
-        }
-    }
-
-    func loginAfterAccountCreation(from viewController: UIViewController) {
-        isLoading = true
-        loginService.setupWebviewNavbar(
-            title: "kChat",
-            titleColor: nil,
-            color: nil,
-            buttonColor: nil,
-            clearCookie: false,
-            timeOutMessage: nil
-        )
-        loginService.webviewLoginFrom(viewController: viewController,
-                                      hideCreateAccountButton: true,
-                                      delegate: self)
-    }
-
-    func login() {
-        isLoading = true
-        loginService.asWebAuthenticationLoginFrom(
-            anchor: ASPresentationAnchor(),
-            useEphemeralSession: true,
-            hideCreateAccountButton: true
-        ) { [weak self] result in
-            switch result {
-            case let .success(result):
-                self?.loginSuccessful(code: result.code, codeVerifier: result.verifier)
-            case let .failure(error):
-                self?.loginFailed(error: error)
-            }
-        }
-    }
-
-    private func loginSuccessful(code: String, codeVerifier verifier: String) {
-        Task {
-            do {
-                let token = try await tokenService.apiTokenUsing(code: code, codeVerifier: verifier)
-
-                onLoginSuccess.callAsFunction(["accessToken": token.accessToken])
-            } catch {
-                os_log("Error fetching token: %@", type: .error, error.localizedDescription)
-                onLoginError.callAsFunction(["error": error.localizedDescription])
-            }
-
-            isLoading = false
-        }
-    }
-
-    private func loginFailed(error: Error) {
-        isLoading = false
-        guard (error as? ASWebAuthenticationSessionError)?.code != .canceledLogin else { return }
-
-        onLoginError.callAsFunction(["error": error.localizedDescription])
-    }
-}
 
 struct OnboardingBottomButtonsView: View {
     @ObservedObject var loginHandler: LoginHandler
@@ -125,12 +47,41 @@ class RNInfomaniakOnboardingView: ExpoView {
 
     private var diSetupDone = false
 
+    private let sentryService = SentryService()
+
     let onLoginSuccess = EventDispatcher("onLoginSuccess")
     let onLoginError = EventDispatcher("onLoginError")
 
     let loginHandler: LoginHandler
 
     required init(appContext: AppContext? = nil) {
+        let factories: [Factory] = [
+            Factory(type: AppGroupPathProvidable.self) { _, _ in
+                guard let provider = AppGroupPathProvider(
+                    realmRootPath: "kchat",
+                    appGroupIdentifier: Constants.appGroupIdentifier
+                ) else {
+                    fatalError("could not safely init AppGroupPathProvider")
+                }
+
+                return provider
+            },
+            Factory(type: DeviceManagerable.self) { _, _ in
+                let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String? ?? "x.x"
+                return DeviceManager(appGroupIdentifier: Constants.sharedAppGroupName,
+                                     appMarketingVersion: version,
+                                     capabilities: [.twoFactorAuthenticationChallengeApproval])
+            },
+            Factory(type: KeychainHelper.self) { _, _ in
+                KeychainHelper(accessGroup: Constants.accessGroup)
+            },
+            Factory(type: TokenStore.self) { _, _ in
+                TokenStore()
+            },
+        ]
+
+        factories.forEach { SimpleResolver.sharedResolver.store(factory: $0) }
+
         loginHandler = LoginHandler(onLoginSuccess: onLoginSuccess, onLoginError: onLoginError)
         super.init(appContext: appContext)
         clipsToBounds = true
@@ -160,13 +111,16 @@ class RNInfomaniakOnboardingView: ExpoView {
         diSetupDone = true
 
         let loginConfig = configuration.toLoginConfiguration()
+        let factories: [Factory] = [
+            Factory(type: InfomaniakNetworkLoginable.self) { _, _ in
+                InfomaniakNetworkLogin(config: loginConfig)
+            },
+            Factory(type: InfomaniakLoginable.self) { _, _ in
+                InfomaniakLogin(config: loginConfig)
+            },
+        ]
 
-        SimpleResolver.sharedResolver.store(factory: Factory(type: InfomaniakNetworkLoginable.self) { _, _ in
-            InfomaniakNetworkLogin(config: loginConfig)
-        })
-        SimpleResolver.sharedResolver.store(factory: Factory(type: InfomaniakLoginable.self) { _, _ in
-            InfomaniakLogin(config: loginConfig)
-        })
+        factories.forEach { SimpleResolver.sharedResolver.store(factory: $0) }
     }
 }
 

@@ -69,5 +69,7 @@
 
 ## Troubleshooting
 
-* If you use Proxyman, make sure it's correctly setup because if the api calls do not work they app won't be able to run correctly
+* 🍏/🤖: If you use Proxyman, make sure it's correctly setup because if the api calls do not work they app won't be able to run correctly
   at all when you try to build it on the emulator.  
+
+* 🍏: Make sure to add correct [app group](https://developer.apple.com/documentation/Xcode/configuring-app-groups) in the xcode target for login purpose. You can change them in `./ios/ConstantsEnum.swift`

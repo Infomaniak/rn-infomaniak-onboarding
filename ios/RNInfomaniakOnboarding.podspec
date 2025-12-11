@@ -29,6 +29,11 @@ Pod::Spec.new do |s|
     requirement: {kind: 'upToNextMajorVersion', minimumVersion: '7.3.1'},
     products: ['InfomaniakLogin']
   )
+  spm_dependency(s,
+    url: 'https://github.com/Infomaniak/ios-core',
+    requirement: {kind: 'upToNextMajorVersion', minimumVersion: '18.0.0'},
+    products: ['InfomaniakCore', 'DeviceAssociation']
+  )
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
