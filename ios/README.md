@@ -88,9 +88,7 @@ Handles the entire authentication process:
 
 The `redirectURI` is automatically generated: `{scheme or bundleId}://oauth2redirect`
 
-## 📦 CocoaPods Dependencies
-
-### Managing Dependencies
+## 📦 Managing Dependencies
 
 The `RNInfomaniakOnboarding.podspec` file uses **Swift Package Manager dependencies** via CocoaPods:
 
@@ -178,7 +176,11 @@ Configure App Group in Xcode:
 3. Enable the group defined in `ConstantsEnum.swift`
 
 ### Keychain Sharing (required for TokenStore)
-Enable Keychain sharing with the `accessGroup` defined in `ConstantsEnum.swift`.
+Configure Keychain sharing in Xcode:
+1. Target > Signing & Capabilities
+2. Add "Keychain sharing"
+3. Add all apps group
+4. Add the `accessGroup` defined in `ConstantsEnum.swift`
 
 ## 🚀 Usage from React Native
 
@@ -227,7 +229,7 @@ If encountering issues with Device Manager, check:
 
 ## 🔄 Module Updates
 
-After modifying Swift code:
+Todo every time after adding new swift depedency:
 ```bash
 cd example
 npx pod-install
