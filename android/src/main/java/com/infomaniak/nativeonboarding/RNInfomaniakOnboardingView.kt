@@ -60,7 +60,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                         userExistenceChecker = userExistenceChecker,
                     ) { userLoginResult ->
                         when (userLoginResult) {
-                            is UserLoginResult.Success -> onLoginSuccess(mapOf("accessToken" to userLoginResult.user.apiToken.accessToken))
+                            is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
                             is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
                             null -> Unit
                         }
