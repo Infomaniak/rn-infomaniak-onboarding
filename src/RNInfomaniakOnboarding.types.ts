@@ -37,6 +37,7 @@ export type LoginConfiguration = {
   createAccountUrl: string; // Url to create the account specific to this app. E.g. https://welcome.infomaniak.com/signup/...
   successHost?: string; // Url to detect that the login has finished with success. By default "ksuite.infomaniak.com"
   cancelHost?: string; // Url to detect that the login has finished with an error. By default "welcome.infomaniak.com"
+  allowMultipleAccounts: boolean; // If the cross app login should limit to only one account or allow the selection of any amount of accounts
 };
 
 export type OnLoginSuccessEventPayload = {

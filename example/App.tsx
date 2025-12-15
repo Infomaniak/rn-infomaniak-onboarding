@@ -11,6 +11,7 @@ export default function App() {
           appVersionCode: 18,
           appVersionName: '0.2.5',
           createAccountUrl: "https://welcome.infomaniak.com/signup/ikmail?app=true",
+          allowMultipleAccounts: true,
         }}
         onboardingConfiguration={{
           primaryColorLight: '#0088B2',
@@ -63,7 +64,7 @@ export default function App() {
           ],
         }}
         onLoginSuccess={(event) => {
-          Alert.alert('Login Success', event.nativeEvent.accessToken);
+          Alert.alert('Login Success', event.nativeEvent.accessTokens);
         }}
         onLoginError={(event) => {
           console.error(`Login Error: ${event.nativeEvent.error}`);
