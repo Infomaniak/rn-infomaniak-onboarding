@@ -41,7 +41,7 @@ export type LoginConfiguration = {
 };
 
 export type OnLoginSuccessEventPayload = {
-  accessToken: string;
+  accessTokens: string[];
 };
 
 export type OnLoginErrorEventPayload = {
