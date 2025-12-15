@@ -42,6 +42,7 @@ fun OnboardingScreen(
     pages: SnapshotStateList<Page>,
     accountsCheckingState: () -> AccountsCheckingState,
     skippedIds: () -> Set<Long>,
+    isSingleSelection: Boolean,
     isLoginButtonLoading: () -> Boolean,
     isSignUpButtonLoading: () -> Boolean,
     onLoginRequest: (accounts: List<ExternalAccount>) -> Unit,
@@ -72,7 +73,7 @@ fun OnboardingScreen(
                     isLoginButtonLoading = isLoginButtonLoading,
                     isSignUpButtonLoading = isSignUpButtonLoading,
                 ),
-                isSingleSelection = true,
+                isSingleSelection = isSingleSelection,
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -133,11 +134,12 @@ private fun Preview(
                     AccountsCheckingState(status = AccountsCheckingStatus.Checking, checkedAccounts = accounts)
                 },
                 skippedIds = { emptySet() },
+                isSingleSelection = false,
+                isLoginButtonLoading = { false },
+                isSignUpButtonLoading = { false },
                 onLoginRequest = {},
                 onCreateAccount = {},
                 onSaveSkippedAccounts = {},
-                isLoginButtonLoading = { false },
-                isSignUpButtonLoading = { false },
                 snackbarHostState = SnackbarHostState(),
             )
         }

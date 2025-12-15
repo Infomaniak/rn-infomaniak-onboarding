@@ -74,7 +74,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 
                     val hostActivity = LocalActivity.current as ComponentActivity
                     LaunchedEffect(crossAppLoginViewModel) {
-                        crossAppLoginViewModel.activateUpdates(hostActivity, singleSelection = true)
+                        crossAppLoginViewModel.activateUpdates(hostActivity, singleSelection = loginData.isSingleSelection)
                     }
 
                     val accounts by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
@@ -100,14 +100,20 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                         colors = { onboardingArgumentColors },
                         accounts = { accounts },
                         skippedIds = { skippedIds },
+                        isSingleSelection = loginData.isSingleSelection,
                         isLoginButtonLoading = { areButtonsLoading },
                         isSignUpButtonLoading = { areButtonsLoading },
                         onLoginRequest = { accounts ->
-                            val account = accounts.singleOrNull()
-                            if (account == null) {
+                            if (accounts.isEmpty()) {
                                 openLoginWebView(loginFlowController)
                             } else {
-                                scope.launch { connectSelectedAccount(account, crossAppLoginViewModel, snackbarHostState) }
+                                scope.launch {
+                                    connectSelectedAccounts(
+                                        accounts,
+                                        crossAppLoginViewModel,
+                                        snackbarHostState
+                                    )
+                                }
                             }
                         },
                         onCreateAccount = { openAccountCreation(loginFlowController, loginData) },
@@ -162,6 +168,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                 createAccountUrl = it.createAccountUrl,
                 successHost = it.successHost,
                 cancelHost = it.cancelHost,
+                isSingleSelection = it.isSingleSelection,
             )
         }
     }
@@ -176,30 +183,32 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
         loginFlowController.createAccount(loginData.createAccountUrl, loginData.successHost, loginData.cancelHost)
     }
 
-    private suspend fun connectSelectedAccount(
-        account: ExternalAccount,
+    private suspend fun connectSelectedAccounts(
+        accounts: List<ExternalAccount>,
         viewModel: BaseCrossAppLoginViewModel,
         snackbarHostState: SnackbarHostState,
     ) {
         startLoadingLoginButtons()
-        val loginResult = viewModel.attemptLogin(selectedAccounts = listOf(account))
+        val loginResult = viewModel.attemptLogin(selectedAccounts = accounts)
         loginUsers(loginResult, snackbarHostState)
         loginResult.errorMessageIds.forEach { messageResId -> snackbarHostState.showSnackbar(context.getString(messageResId)) }
     }
 
     private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
-        val apiToken = loginResult.tokens.singleOrNull()
-        val result = apiToken?.let {
-            LoginUtils.getLoginResultsAfterCrossApp(listOf(apiToken), context, userExistenceChecker).single()
+        val results = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, context, userExistenceChecker)
+        val accessTokens = buildList {
+            results.forEach { result ->
+                when (result) {
+                    is UserLoginResult.Success -> add(result.user.apiToken.accessToken)
+                    is UserLoginResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
+                }
+            }
         }
 
-        when (result) {
-            is UserLoginResult.Success -> reportAccessToken(result.user.apiToken.accessToken)
-            is UserLoginResult.Failure -> {
-                stopLoadingLoginButtons()
-                snackbarHostState.showSnackbar(result.errorMessage)
-            }
-            null -> stopLoadingLoginButtons()
+        if (accessTokens.isEmpty()) {
+            stopLoadingLoginButtons()
+        } else {
+            reportAccessTokens(accessTokens)
         }
     }
 
@@ -212,7 +221,13 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     }
 
     private fun reportAccessToken(accessToken: String) {
-        onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to accessToken))
+        onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to listOf(accessToken)))
+    }
+
+    private fun reportAccessTokens(accessTokens: List<String>) {
+        if (accessTokens.isNotEmpty()) {
+            onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to accessTokens))
+        }
     }
 
     private fun reportError(errorMessage: String) {
@@ -249,6 +264,7 @@ private fun OnboardingViewContent(
     colors: () -> OnboardingArgumentColors?,
     accounts: () -> AccountsCheckingState,
     skippedIds: () -> Set<Long>,
+    isSingleSelection: Boolean,
     isLoginButtonLoading: () -> Boolean,
     isSignUpButtonLoading: () -> Boolean,
     onLoginRequest: (List<ExternalAccount>) -> Unit,
@@ -261,6 +277,7 @@ private fun OnboardingViewContent(
             pages = pages,
             accountsCheckingState = accounts,
             skippedIds = skippedIds,
+            isSingleSelection = isSingleSelection,
             isLoginButtonLoading = isLoginButtonLoading,
             isSignUpButtonLoading = isSignUpButtonLoading,
             onLoginRequest = onLoginRequest,
@@ -278,6 +295,7 @@ private data class LoginData(
     val createAccountUrl: String,
     val successHost: String,
     val cancelHost: String,
+    val isSingleSelection: Boolean,
 )
 
 @Preview
@@ -291,6 +309,7 @@ private fun Preview(
         colors = { null },
         accounts = { accounts },
         skippedIds = { emptySet() },
+        isSingleSelection = false,
         isLoginButtonLoading = { false },
         isSignUpButtonLoading = { false },
         onLoginRequest = {},
