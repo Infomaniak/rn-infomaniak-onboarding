@@ -10,6 +10,8 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +47,7 @@ fun OnboardingScreen(
     pages: SnapshotStateList<Page>,
     onLoginRequest: () -> Unit,
     onCreateAccount: () -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
@@ -63,13 +66,14 @@ fun OnboardingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (isLastPage) {
-                    Button({}) { Text("Connect") }
-                    Button({}) { Text("New account") }
+                    Button(onLoginRequest) { Text("Connect") }
+                    Button(onCreateAccount) { Text("New account") }
                 } else {
                     Button({ scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } }) { Text("Next") }
                 }
             }
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     )
 }
 
@@ -122,6 +126,7 @@ private fun Preview(@PreviewParameter(PagesPreviewParameter::class) pages: Snaps
                 pages = pages,
                 onLoginRequest = {},
                 onCreateAccount = {},
+                snackbarHostState = SnackbarHostState(),
             )
         }
     }

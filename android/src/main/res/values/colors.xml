@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="loginToolbarBackground">#F4F6FD</color>
+    <color name="loginToolbarOnBackground">@color/orca</color>
+</resources>

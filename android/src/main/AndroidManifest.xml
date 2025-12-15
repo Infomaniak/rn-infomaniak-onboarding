@@ -5,5 +5,15 @@
         <meta-data
             android:name="io.sentry.dsn"
             android:value="" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewLoginActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/LoginWebViewTheme" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewCreateAccountActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/LoginWebViewTheme" />
     </application>
 </manifest>
