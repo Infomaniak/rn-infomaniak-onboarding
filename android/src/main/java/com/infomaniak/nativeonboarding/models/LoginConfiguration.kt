@@ -13,8 +13,10 @@ data class LoginConfiguration(
     @Field var createAccountUrl: String,
     @Field("successHost") private var _successHost: String?,
     @Field("cancelHost") private var _cancelHost: String?,
+    @Field private var allowMultipleAccounts: Boolean,
 ) : Record {
     val loginUrl: String get() = loginURL ?: "https://login.infomaniak.com/"
     val successHost: String get() = _successHost ?: "ksuite.infomaniak.com"
     val cancelHost: String get() = _cancelHost ?: "welcome.infomaniak.com"
+    val isSingleSelection: Boolean get() = allowMultipleAccounts.not()
 }

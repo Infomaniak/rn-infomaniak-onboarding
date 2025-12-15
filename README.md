@@ -3,7 +3,7 @@
 ## How to use this library in an Expo module
 
 This library provides a RNInfomaniakOnboardingView component that displays the onboarding screens and manages the entire login
-flow. After a successful login, the view returns an access token.
+flow. After a successful login, the view returns a list of access tokens.
 
 ### Basic usage
 ```tsx
@@ -14,7 +14,7 @@ flow. After a successful login, the view returns an access token.
     onboardingConfiguration={{
     ...
     }}
-    onLoginSuccess={(accessToken) => console.log(event.nativeEvent.accessToken)}
+    onLoginSuccess={(event) => console.log(event.nativeEvent.accessTokens)}
     onLoginError={(event) => console.error(event.nativeEvent.error)}
 />
 ```

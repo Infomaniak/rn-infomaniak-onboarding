@@ -24,7 +24,7 @@ import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
 
-private const val SUCCESS_EVENT_KEY = "accessToken"
+private const val SUCCESS_EVENT_KEY = "accessTokens"
 private const val ERROR_EVENT_KEY = "error"
 
 class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
