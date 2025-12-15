@@ -62,67 +62,67 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     private var areButtonsLoading by mutableStateOf(false)
 
     init {
-        addView(ComposeView(context).apply {
-            setContent {
-                val scope = rememberCoroutineScope()
-                val snackbarHostState = remember { SnackbarHostState() }
+        val composeView = ComposeView(context)
+        composeView.setContent {
+            val scope = rememberCoroutineScope()
+            val snackbarHostState = remember { SnackbarHostState() }
 
-                loginData?.let { loginData ->
-                    val crossAppLoginViewModel = viewModel<CrossAppLoginViewModel>(
-                        factory = CrossAppLoginViewModelFactory(loginData.applicationId, loginData.clientId)
-                    )
+            loginData?.let { loginData ->
+                val crossAppLoginViewModel = viewModel<CrossAppLoginViewModel>(
+                    factory = CrossAppLoginViewModelFactory(loginData.applicationId, loginData.clientId)
+                )
 
-                    val hostActivity = LocalActivity.current as ComponentActivity
-                    LaunchedEffect(crossAppLoginViewModel) {
-                        crossAppLoginViewModel.activateUpdates(hostActivity, singleSelection = loginData.isSingleSelection)
-                    }
-
-                    val accounts by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
-                    val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()
-
-                    Log.i(TAG, "Got ${accounts.checkedAccounts.count()} accounts from other apps")
-
-                    val loginFlowController = LoginUtils.rememberLoginFlowController(
-                        infomaniakLogin = loginData.infomaniakLogin,
-                        userExistenceChecker = userExistenceChecker,
-                    ) { userLoginResult ->
-                        when (userLoginResult) {
-                            is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
-                            is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
-                            null -> Unit
-                        }
-
-                        if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
-                    }
-
-                    OnboardingViewContent(
-                        pages = pages,
-                        colors = { onboardingArgumentColors },
-                        accounts = { accounts },
-                        skippedIds = { skippedIds },
-                        isSingleSelection = loginData.isSingleSelection,
-                        isLoginButtonLoading = { areButtonsLoading },
-                        isSignUpButtonLoading = { areButtonsLoading },
-                        onLoginRequest = { accounts ->
-                            if (accounts.isEmpty()) {
-                                openLoginWebView(loginFlowController)
-                            } else {
-                                scope.launch {
-                                    connectSelectedAccounts(
-                                        accounts,
-                                        crossAppLoginViewModel,
-                                        snackbarHostState
-                                    )
-                                }
-                            }
-                        },
-                        onCreateAccount = { openAccountCreation(loginFlowController, loginData) },
-                        onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
-                        snackbarHostState = snackbarHostState,
-                    )
+                val hostActivity = LocalActivity.current as ComponentActivity
+                LaunchedEffect(crossAppLoginViewModel) {
+                    crossAppLoginViewModel.activateUpdates(hostActivity, singleSelection = loginData.isSingleSelection)
                 }
+
+                val accounts by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
+                val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()
+
+                Log.i(TAG, "Got ${accounts.checkedAccounts.count()} accounts from other apps")
+
+                val loginFlowController = LoginUtils.rememberLoginFlowController(
+                    infomaniakLogin = loginData.infomaniakLogin,
+                    userExistenceChecker = userExistenceChecker,
+                ) { userLoginResult ->
+                    when (userLoginResult) {
+                        is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
+                        is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+                        null -> Unit
+                    }
+
+                    if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
+                }
+
+                OnboardingViewContent(
+                    pages = pages,
+                    colors = { onboardingArgumentColors },
+                    accounts = { accounts },
+                    skippedIds = { skippedIds },
+                    isSingleSelection = loginData.isSingleSelection,
+                    isLoginButtonLoading = { areButtonsLoading },
+                    isSignUpButtonLoading = { areButtonsLoading },
+                    onLoginRequest = { accounts ->
+                        if (accounts.isEmpty()) {
+                            openLoginWebView(loginFlowController)
+                        } else {
+                            scope.launch {
+                                connectSelectedAccounts(
+                                    accounts,
+                                    crossAppLoginViewModel,
+                                    snackbarHostState
+                                )
+                            }
+                        }
+                    },
+                    onCreateAccount = { openAccountCreation(loginFlowController, loginData) },
+                    onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
+                    snackbarHostState = snackbarHostState,
+                )
             }
-        })
+        }
+        addView(composeView)
     }
 
     fun setOnboardingConfig(config: OnboardingConfiguration) {
