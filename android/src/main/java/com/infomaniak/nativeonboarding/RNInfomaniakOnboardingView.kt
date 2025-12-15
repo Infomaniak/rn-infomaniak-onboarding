@@ -188,13 +188,18 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
     }
 
     private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
-        // TODO: Handle case where it failed and returned no tokens
-        when (val result = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, context, userExistenceChecker).single()) {
+        val apiToken = loginResult.tokens.singleOrNull()
+        val result = apiToken?.let {
+            LoginUtils.getLoginResultsAfterCrossApp(listOf(apiToken), context, userExistenceChecker).single()
+        }
+
+        when (result) {
             is UserLoginResult.Success -> reportAccessToken(result.user.apiToken.accessToken)
             is UserLoginResult.Failure -> {
                 stopLoadingLoginButtons()
                 snackbarHostState.showSnackbar(result.errorMessage)
             }
+            null -> stopLoadingLoginButtons()
         }
     }
 
