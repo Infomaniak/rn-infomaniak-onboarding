@@ -19,8 +19,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.core.graphics.toColorInt
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.core.auth.UserExistenceChecker
@@ -48,16 +46,6 @@ import kotlinx.coroutines.launch
 
 private const val SUCCESS_EVENT_KEY = "accessTokens"
 private const val ERROR_EVENT_KEY = "error"
-
-
-class CrossAppLoginViewModelFactory(
-    private val applicationId: String,
-    private val clientId: String,
-) : ViewModelProvider.NewInstanceFactory() {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = CrossAppLoginViewModel(applicationId, clientId) as T
-}
-
 
 class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : ExpoView(context, appContext) {
     // Creates and initializes an event dispatcher for the `onLoginSuccess` and `onLoginError` events.
