@@ -15,11 +15,17 @@ pluginManagement {
             "../android/expo-gradle-plugin"
     ).absolutePath
     includeBuild(expoPluginsPath)
+    includeBuild("../../android/Core/build-logic")
 }
 
 plugins {
     id("com.facebook.react.settings")
     id("expo-autolinking-settings")
+    id("com.infomaniak.core.composite")
+}
+
+coreCompositeConfig {
+    coreRootPath = "../../android/Core"
 }
 
 extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
@@ -34,19 +40,6 @@ expoAutolinking.useExpoModules()
 rootProject.name = 'rn-infomaniak-onboarding-example'
 
 expoAutolinking.useExpoVersionCatalog()
-
-includeBuild("../../android/Core") {
-    dependencySubstitution {
-        substitute(module("com.infomaniak.core:Auth")).using(project(":Auth"))
-        substitute(module("com.infomaniak.core:Core")).using(project(":"))
-        substitute(module("com.infomaniak.core:Network")).using(project(":Network"))
-        substitute(module("com.infomaniak.core:Onboarding")).using(project(":Onboarding"))
-        substitute(module("com.infomaniak.core:Ui.Compose.Basics")).using(project(":Ui:Compose:Basics"))
-        substitute(module("com.infomaniak.core:Ui.Compose.Margin")).using(project(":Ui:Compose:Margin"))
-        substitute(module("com.infomaniak.core:Ui.View")).using(project(":Ui:View"))
-        substitute(module("com.infomaniak.core:CrossAppLogin.Front")).using(project(":CrossAppLogin:Front"))
-    }
-}
 
 dependencyResolutionManagement {
     versionCatalogs {
