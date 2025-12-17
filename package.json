@@ -1,5 +1,5 @@
 {
-  "name": "rn-infomaniak-onboarding",
+  "name": "@infomaniak/react-native-onboarding",
   "version": "0.1.0",
   "description": "Module to share native onboarding librairies",
   "main": "build/index.js",
