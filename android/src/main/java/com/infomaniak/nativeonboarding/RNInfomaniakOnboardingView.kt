@@ -42,6 +42,7 @@ import com.infomaniak.nativeonboarding.theme.OnboardingTheme
 import expo.modules.kotlin.AppContext
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : ExpoView(context, appContext), OnboardingEvents {
@@ -79,18 +80,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
 
                 Log.i(TAG, "Got ${accounts.checkedAccounts.count()} accounts from other apps")
 
-                val loginFlowController = LoginUtils.rememberLoginFlowController(
-                    infomaniakLogin = loginData.infomaniakLogin,
-                    userExistenceChecker = userExistenceChecker,
-                ) { userLoginResult ->
-                    when (userLoginResult) {
-                        is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
-                        is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
-                        null -> Unit
-                    }
-
-                    if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
-                }
+                val loginFlowController = rememberLoginFlowController(loginData, scope, snackbarHostState)
 
                 OnboardingViewContent(
                     pages = pages,
@@ -104,13 +94,7 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
                         if (accounts.isEmpty()) {
                             openLoginWebView(loginFlowController)
                         } else {
-                            scope.launch {
-                                connectSelectedAccounts(
-                                    accounts,
-                                    crossAppLoginViewModel,
-                                    snackbarHostState
-                                )
-                            }
+                            scope.launch { connectSelectedAccounts(accounts, crossAppLoginViewModel, snackbarHostState) }
                         }
                     },
                     onCreateAccount = { openAccountCreation(loginFlowController, loginData) },
@@ -120,6 +104,24 @@ class RNInfomaniakOnboardingView(context: Context, appContext: AppContext) : Exp
             }
         }
         addView(composeView)
+    }
+
+    @Composable
+    private fun rememberLoginFlowController(
+        loginData: LoginData,
+        scope: CoroutineScope,
+        snackbarHostState: SnackbarHostState,
+    ): LoginFlowController = LoginUtils.rememberLoginFlowController(
+        infomaniakLogin = loginData.infomaniakLogin,
+        userExistenceChecker = userExistenceChecker,
+    ) { userLoginResult ->
+        when (userLoginResult) {
+            is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
+            is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+            null -> Unit
+        }
+
+        if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
     }
 
     fun setOnboardingConfig(config: OnboardingConfiguration) {
