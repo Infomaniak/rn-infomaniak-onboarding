@@ -13,13 +13,11 @@ interface OnboardingEvents {
     val onLoginError: ViewEventCallback<Map<String, Any>>
 
     fun reportAccessToken(accessToken: String) {
-        onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to listOf(accessToken)))
+        reportAccessTokens(listOf(accessToken))
     }
 
     fun reportAccessTokens(accessTokens: List<String>) {
-        if (accessTokens.isNotEmpty()) {
-            onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to accessTokens))
-        }
+        onLoginSuccess(mapOf(SUCCESS_EVENT_KEY to accessTokens))
     }
 
     fun reportMissingIllustration() {
